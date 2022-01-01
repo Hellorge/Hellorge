@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>color my notifications</title>
+  <style>
+    :root{
+      font-family: poppins;
+    }
+    body{
+      color: #fff;
+      background-color: #181818;
+    }
+    ::-webkit-scrollbar{
+      width: 0px;
+      background-color: transparent;
+    }
+    [scrBxAlt]::-webkit-scrollbar{
+      width: 3px;
+    }
+    [scrBxAlt]::-webkit-scrollbar-thumb {
+      width: 3px;
+      background-color: #fff;
+    }
+    /*  */
+    /* notification engine css */
+    progress[nt-prog]{
+      width: 100%;
+      margin: 15px auto 10px;
+    }
+    nt-bx{
+      width: 40ch;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      top: 0%;
+      right: 0%;
+      position: fixed;
+      transform: translateX(100%);
+    }
+    nt-bx.open {
+      display: block;
+      overflow: auto;
+      background-color: #0d0e10;
+      transform: translateX(0);
+      transition: .2s ease-in-out;
+      box-shadow: 0 0 13px -5px #000;
+      --nt-shadow: none;
+      --nt-btHide: none;
+      --nt-right: 0;
+      --nt-brdr: 5px;
+    }
+    nt-bx.open:empty::after{
+      content: 'Looks like there\'s no update for you';
+      color: #555;
+      text-align: center;
+      margin-top: 3em;
+      display: block;
+    }
+    nt{
+      overflow: hidden;
+      border-radius: var(--nt-brdr,15px);
+      padding: 5px 20px 5px;
+      margin: 10px 5px 10px 10px;
+      box-shadow: var(--nt-shadow, 0 2px 10px -5px #000);
+      box-sizing: border-box;
+      background-color: rgba(var(--nt-background),1);
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition:  0s all var(--nt-right, .4s),var(--nt-right, .4s) right 0s;
+      right: 0;
+      order: 10;
+      flex-shrink: 0;
+      --nt-btHide2: var(--nt-btHide, initial);
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    nt.xxx{
+      right: var(--nt-right,100%);
+      order: 5;
+    }
+    nt.nt-X-false{
+      --nt-btnCros: none;
+    }
+    nt.nt-btH-false{
+      --nt-btHide2: none;
+    }
+    nt.nt-autohide-false{
+      --nt-autohide: none;
+    }
+    nt.e{
+      --nt-background: 242,72,72;
+    }
+    nt.w{
+      --nt-background: 255,165,6;
+    }
+    nt.p{
+      --nt-background: 9,168,255;
+    }
+    nt.l{
+      --nt-background: 152,179,169;
+    }
+    nt.s{
+      --nt-background: 62,231,147;
+    }
+    nt.m{
+      --nt-background: 236,185,115;
+    }
+    nt-hd{
+      font-size: 1.1em;
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nt-hdt::after{
+      content: var(--nt-head);
+    }
+    nt-bd{
+      padding-inline: 10px;
+      flex-grow: 1;
+    }
+    nt-op{
+      display: flex;
+    }
+    nt-btn,nt-bth{
+      flex-basis: 0;
+      flex-grow: 1;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: 1px;
+      padding: 0 10px;
+      background-color: #ffffff;
+      color: rgb(var(--nt-background));
+      margin: 0 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 15px -10px #000;
+      --ntb-r: 20px;
+    }
+    nt-btn:first-of-type{
+      border-top-left-radius: var(--ntb-r);
+      border-bottom-left-radius: var(--ntb-r);
+    }
+    nt-btn:last-of-type{
+      border-top-right-radius: var(--ntb-r);
+      border-bottom-right-radius: var(--ntb-r);
+    }
+    nt-bth{
+      display: var(--nt-btHide2, initial);
+      margin-left: 5px;
+      border-radius: var(--ntb-r);
+      background-image: linear-gradient(to right, #fff 50%, #e3e3e3c7 50%);
+      background-position: 0% 0%;
+      background-size: 200%;
+      animation: var(--nt-autohide, hider) 10s linear 0s infinite alternate;
+    }
+    nt-bth::after{
+      content: 'hide';
+    }
+    nt-x{
+      display: var(--nt-btnCros, initial);
+      cursor: pointer;
+      margin-left: 5px;
+      margin-right: -10px;
+      position: relative;
+      height: 20px;
+      width: 20px;
+    }
+    nt-x::before,nt-x::after{
+      content: '';
+      display: block;
+      height: 100%;
+      width: 2px;
+      background-color: #000;
+      position: absolute;
+      left: 50%;
+      transform: rotateZ(45deg);
+      transform-origin: center;
+    }
+    nt-x::after{
+      transform: rotateZ(315deg);
+    }
+    ld-o{
+      height: 40px;
+      width: 40px;
+      margin: 15px auto;
+      display: block;
+      border: 5px solid #fff;
+      border-radius: 100%;
+      border-color: #fff #fff transparent;
+      animation: ldo 1s linear 0s infinite normal;
+    }
+    @keyframes ldo {
+      from{transform: rotateZ(0deg);}
+      to{transform: rotateZ(360deg);}
+    }
+    @keyframes hider{
+      from{background-position: 100% 0%;}
+      to{background-position: 0% 0%;}
+    }
+  </style>
+</head>
+<body>
+    <h1>Notification Engine | MK01</h1>
+    <br>
+    <span>Preview :</span>
+    <br>
+    <br>
+    <form onsubmit="return false" style="padding-left: 1em;">
+      <label for="nttp">
+        notification type* :
+        <select onchange="typeChanged(this.value);" id="nttp" required>
+          <option value="" selected required>select type</option>
+          <option value="e">error</option>
+          <option value="w">warning</option>
+          <option value="p">progress</option>
+          <option value="l">loading</option>
+          <option value="s">success</option>
+          <option value="m">message</option>
+        </select>
+      </label>
+      <br><br>
+      <fieldset id="progress" disabled style="overflow: hidden;height:0;padding:0;border: 0;">
+        progress type:
+        <label for="p-kn"><input onchange="document.querySelector('#pgknown').style.display=this.checked?'':'none'" type="radio" name="progressType" value="1" id="p-kn" required> Known</label>
+        <label for="p-uk"><input onchange="document.querySelector('#pgknown').style.display=this.checked?'none':''" type="radio" name="progressType" value="0" id="p-uk" required> Unknown</label>
+        <div id="pgknown" style="display: none;">
+          <br>
+          <label for="p-knv">known progress update: <input onchange="pgValUpdated(this.value,this.max,this.min)" type="range" name="progressCount" id="p-knv" max="100" value="0" step="1" min="0"></label>
+          <br>
+          <label for="pglost">known progress update lost? check this : <input onchange="pgValLostGot(this.checked)" type="checkbox" name="" id="pglost"></label>
+        </div>
+        <br><br>
+        <button id="p-end" onclick="pgCompleted(this)" type="button" disabled>progress completed</button>
+      </fieldset>
+      <br>
+      <label for="nthd">notification head : <input id="nthd" type="text" placeholder="Insert Heading"></label>
+      <br><br>
+      <label for="ntms">notification text : <input id="ntms" type="text" placeholder="Insert Heading"></label>
+      <br><br>
+      <label for="ntxx">notification can close : <input id="ntxx" type="checkbox" checked></label>
+      <br><br>
+      <label for="nthh">notification can hide : <input type="checkbox" id="nthh" checked></label> | <label for="ntat">auto hide (10 sec) : <input id="ntat" type="checkbox" checked></label>
+      <br><br>
+      notification options :
+      <br/>
+      <label for="ntop-cancel"><input type="checkbox" id="ntop-cancel" name="ntop" value="cancel">: cancel</label>
+      <br/>
+      <label for="ntop-retry"><input type="checkbox" id="ntop-retry" name="ntop" value="retry">: retry</label>
+      <br/>
+      <label for="ntop-logout"><input type="checkbox" id="ntop-logout" name="ntop" value="logout">: logout</label>
+      <br/>
+      <label for="ntop-login"><input type="checkbox" id="ntop-login" name="ntop" value="login">: login</label>
+    <br><br>
+    <button onclick="previewSubmit(this);">CREATE NOTIFICATION</button>
+  </form>
+    <br>
+    <br>
+    <br>
+    <center>
+      <button onclick="ntPane()">notifications panel</button>
+    </center>
+
+    <nt-bx scrBxAlt><nt class="e xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Uh oh, something went wrong</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt><nt class="p xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Working on your query</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt><nt class="s xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Yay! Everything worked well</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt><nt class="m xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Hello, here's a message</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt><nt class="w xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Opps, looks like a mishap</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt><nt class="l xxx nt-autohide-false">
+        <nt-hd>
+          <nt-hdt>Loading your view</nt-hdt>
+          <nt-x onclick="ntClose(this);"/>
+        </nt-hd>
+        <nt-op>
+          <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+        </nt-op>
+      </nt></nt-bx>
+</body>
+<script>
+  function typeChanged(t){
+    if(t=='p'){
+      document.querySelector('fieldset#progress').style.height='auto';
+      document.querySelector('fieldset#progress').removeAttribute('disabled');
+    } else {
+      document.querySelector('fieldset#progress').style.height=0;
+      document.querySelector('fieldset#progress').setAttribute('disabled',true);
+    }
+  }
+  function pgValUpdated(){
+    pgKv=document.querySelector('#p-knv').value;
+    pgKu=document.querySelector('#p-knv').max;
+    pgKl=document.querySelector('#p-knv').min;
+    pgPr=((pgKv-pgKl)/(pgKu-pgKl))*100;
+    document.querySelector(`nt#${document.querySelector('fieldset#progress').ariaLive} progress`).value=pgPr;
+    document.querySelector('#pglost').checked=false;
+  }
+  function pgValLostGot(v){
+    if(v){
+      document.querySelector(`nt#${document.querySelector('fieldset#progress').ariaLive} progress`).removeAttribute('value');
+    } else {
+      pgValUpdated();
+    }
+  }
+  function pgCompleted(b){
+    b.disabled=true;
+    document.querySelector(`nt#${document.querySelector('fieldset#progress').ariaLive} nt-bd`).innerHTML='<p>Operation Finished</p>'
+  }
+
+  function previewSubmit(b){
+    if(!b.parentElement.checkValidity())return;
+    let type = document.querySelector('#nttp').value;
+    let head = document.querySelector('#nthd').value;
+    let mssg = document.querySelector('#ntms').value;
+    let btnx = document.querySelector('#ntxx').checked;
+    let btnh = document.querySelector('#nthh').checked;
+    let athd = document.querySelector('#ntat').checked;
+    let optn = [...document.querySelectorAll('input[type="checkbox"][name="ntop"]:checked')].map(e=>e.value);
+
+    let pgTp = document.querySelector('input[name="progressType"]:checked')?.value||false
+    var pgPr;
+
+    if(pgTp){
+      document.querySelector('#p-end').removeAttribute('disabled');
+      if(pgTp==1){
+        // known progress
+        pgKv=document.querySelector('#p-knv').value;
+        pgKu=document.querySelector('#p-knv').max;
+        pgKl=document.querySelector('#p-knv').min;
+        pgPr=['known',((pgKv-pgKl)/(pgKu-pgKl))*100];
+      } else {
+        // unknown progress
+        pgPr=['unknown'];
+      }
+    }
+
+    let newNtID = ntCreate({
+      ntType:type,
+      ntHead:head,
+      ntMssg:mssg,
+      ntBtnx:btnx,
+      ntBtnh:btnh,
+      ntAthd:athd,
+      ntOpts:optn,
+      ntPgpr:pgPr
+    });
+    document.querySelector('fieldset#progress').ariaLive=newNtID;
+  }
+</script>
+<script type="text/javascript">
+  function ntHide(x){
+    x.classList.remove('xxx');
+  }
+  function ntClose(x){
+    x.parentElement.parentElement.remove();
+  }
+  function ntPane(){
+    let ntBox = document.querySelector('nt-bx');
+    ntBox.classList.toggle('open');
+    ntBox.querySelectorAll('.xxx').forEach(el=>{ntHide(el)});
+  }
+  function ntCreate(ntmake){
+    window.ntCount=0;
+    let optnClicks = {hide:ntHide, login:'', logout:'', cancel:'', retry:''};
+
+    var ntDumm = {
+      e: [`Uh oh, something went wrong`],
+      p: [`Working on your query`, '<progress nt-prog value="}{progressValue}{" max="100" min="0"></progress>', '<ld-o/>'],
+      s: [`Yay! Everything worked well`],
+      l: [`Please wait`],
+      w: [`Opps, looks like a mishap`],
+      m: [`Hello, here's a message`]
+    }
+    let ntBox = document.querySelector('nt-bx');
+    let nt = document.createElement('nt');
+    let ntID = `${ntmake.ntType}${new Date().getTime()}${ntCount}`.toUpperCase();
+    ntCount++;
+    nt.id=ntID;
+    nt.classList.add(ntmake.ntType,'xxx',`nt-X-${ntmake.ntBtnx}`,`nt-btH-${ntmake.ntBtnh}`,`nt-autohide-${ntmake.ntAthd}`);
+    nt.innerHTML=`<nt-hd>
+      <nt-hdt>${ntmake.ntHead||ntDumm[ntmake.ntType][0]}</nt-hdt>
+      <nt-x onclick="ntClose(this);"/>
+    </nt-hd>
+    <nt-bd>
+    ${ntmake.ntMssg?`<p>${ntmake.ntMssg}</p>`:''}
+    ${ntmake.ntType=='p'?`${ntmake.ntPgpr[0]=='known'?`${ntDumm[ntmake.ntType][1].replace('}{progressValue}{', (ntmake.ntPgpr[1]||0) )}`:`${ntDumm[ntmake.ntType][2]}`}`:''}
+    </nt-bd>
+    <nt-op>
+      ${ntmake.ntOpts.map(e=>`<nt-btn onclick="${optnClicks[e]}">${e}</nt-btn>`).join('')}
+      <nt-gr>
+      <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
+    </nt-op>`;
+    ntBox.insertBefore(nt, ntBox.firstChild);
+    if(ntmake.ntAthd)setTimeout(()=>{ntHide(nt);},10000);
+    return ntID;
+  }
+</script>
+</html>
