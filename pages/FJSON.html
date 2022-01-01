@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        class FJSON {
+            constructor(_data) {
+              for(let key in _data){
+                  this[key] = _data[key];
+              }
+              this.write_()
+            };
+            [Symbol.iterator]() {
+                var index = -1;
+                var data  = this._vals
+
+                return {
+                    next: () => ({ value: data[++index], done: !(index in data) })
+                };
+            };
+
+            write_(){
+              delete this._data;
+              Object.defineProperty(this, "_data", {
+                  enumerable: false,
+                  writable: false,
+                  configurable: true,
+                  value: Object.entries(this)
+              });
+              delete this._keys;
+              Object.defineProperty(this, "_keys", {
+                  enumerable: false,
+                  writable: false,
+                  configurable: true,
+                  value: Object.keys(this)
+              });
+              delete this._vals;
+              Object.defineProperty(this, "_vals", {
+                  enumerable: false,
+                  writable: false,
+                  configurable: true,
+                  value: Object.values(this)
+              });
+            }
+
+            push(k,v) {
+              this[k] = v;
+              this.write_();
+            }
+            array(_arr){
+              let ln = this._keys.length;
+              for (let j=0;j<_arr.length;j++){
+                this[this.checkIdx(ln+j)] = _arr[j];
+              }
+            }
+            json(_jsn){
+              for (let k in _jsn){
+                this[k] = _jsn[k];
+              }
+              this.write_();
+            }
+            checkIdx(idx){
+              // let key = String.fromCharCode(97 + (idx)%26);
+              let key = idx;
+              if(this.hasOwnProperty(key)){
+                return this.checkIdx(idx+1);
+              } else {
+                return key;
+              }
+            }
+            get(k){
+              if(this[k]===''){
+                let idx = this._keys.indexOf(k)+1;
+                idx = idx<this._keys.length?idx:0;
+                return this.get( this._keys[idx] );
+              }
+              else return this[k]
+            }
+        }
+
+        let obj = new FJSON({ e: 5, f: 'k', g: 11, h: '', i: ''});
+        // obj.push('z','');
+        // obj.array([1,2,3,4,9]);
+        // obj.json({'qq': 123,'dd':678, 1: 'one'});
+        //
+        // console.log(obj.get('z'));
+
+        // console.log('iterator: ', [...obj]);
+        // console.log('keys: ', obj._keys);
+        // console.log('values: ',obj._vals);
+        obj.array([1000,2000,3000,4000]);
+        console.log('entries: ',obj);
+        console.log(obj.get('d'));
+    </script>
+</body>
+</html>

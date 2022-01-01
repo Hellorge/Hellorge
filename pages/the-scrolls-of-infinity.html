@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+  <title>To the Infinity & Beyond</title>
+  <style media="screen">
+  infy{
+      display: block;
+      overflow: hidden;
+      padding: 2em 0;
+      perspective: 800px;
+      perspective-origin: center;
+      transform-style: preserve-3d;
+      --el-height: 25em;
+      --el-width: 48%;
+      --el-axiZ: 0;
+      --el-trnsZ: -5vw;
+      --el-linfy: 0;
+      --el-cinfy: calc(50% - var(--el-width)/2);
+      --el-rinfy: calc(100% - var(--el-width));
+      --el-opct: 1;
+      --el-opct2: 1;
+  }
+  infy[bnr]{
+      --el-width: 90%;
+      --el-axiZ: 1;
+      --el-trnsZ: -1px;
+      --el-linfy: calc(0% - 89%);
+      --el-cinfy: 5%;
+      --el-rinfy: 99%;
+      --el-opct: 0;
+      --el-opct2: 1;
+  }
+  inf-bx{
+      display: block;
+      transform-style: preserve-3d;
+      height: var(--el-height);
+  }
+  inf-dv{
+      transform: translate3d(0, 0, calc(var(--el-axiZ)*var(--el-trnsZ)));
+      background-color: #0155ff;
+      color: #fff;
+      border-radius: 30px;
+      height: calc(var(--el-height));
+      width: var(--el-width);
+      display: inline-block;
+      text-align: center;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0px;
+      left: var(--el-linfy);
+      box-shadow: 0 5px 20px -10px #000;
+      transition: 1s;
+      opacity: var(--el-opct);
+  }
+  inf-dv.c-inf{
+      left: var(--el-cinfy);
+      transform: translate3d(0, 0, 0);
+      box-shadow: 0 5px 30px -5px #000;
+      opacity: 1;
+  }
+  inf-dv.r-inf{
+      left: var(--el-rinfy);
+  }
+  inf-dv{
+      --el-axiZ: 5;
+  }
+  inf-dv[role="4"]{
+      --el-axiZ: 4;
+  }
+  inf-dv[role="3"]{
+      --el-axiZ: 3;
+  }
+  inf-dv[role="2"]{
+      --el-axiZ: 2;
+  }
+  inf-dv[role="1"]{
+      --el-axiZ: 1;
+      opacity: var(--el-opct2);
+  }
+  .infy-cont{
+      position: absolute;
+      top: 50%;
+      font-size: 25vw;
+      left: 50%;
+      transform: translate(-50%, -50%);
+  }
+  .inf-ar{
+      background: linear-gradient(#FF3E01, #FF7B01);
+      border-radius: 100%;
+      color: #fff;
+      text-align: center;
+      position: absolute;
+      font: inherit;
+      top: 50%;
+      left: -.8em;
+      font-size: 2em;
+      height: 2em;
+      width: 2em;
+      font-weight: 300;
+      line-height: 1em;
+      border: 0;
+      cursor: pointer;
+      box-shadow: 0 0 13px -5px #000;
+      padding-left: 0.5em;
+      transform: translate3d(0,-50%,0);
+      transition: .2s;
+      --arr-X: -.1em;
+  }
+  .inf-ar:active{
+      transform: translate3d(var(--arr-X),-50%,0) scale(.99);
+  }
+  .inf-ar.rt{
+      --arr-X: .1em;
+      left: initial;
+      right: -.8em;
+      padding-right: 0.5em;
+      padding-left: 0;
+  }
+  </style>
+</head>
+<body>
+  <infy>
+    <inf-bx aria-label="true" aria-live="">
+      <inf-dv class="l-inf" role="4"><span class="infy-cont">0</span></inf-dv>
+      <inf-dv class="l-inf" role="3"><span class="infy-cont">1</span></inf-dv>
+      <inf-dv class="l-inf" role="2"><span class="infy-cont">2</span></inf-dv>
+      <inf-dv class="l-inf" role="1"><span class="infy-cont">3</span></inf-dv>
+      <inf-dv class="c-inf" role="0"><span class="infy-cont">4</span></inf-dv>
+      <inf-dv class="r-inf" role="1"><span class="infy-cont">5</span></inf-dv>
+      <inf-dv class="r-inf" role="2"><span class="infy-cont">6</span></inf-dv>
+      <inf-dv class="r-inf" role="3"><span class="infy-cont">7</span></inf-dv>
+      <inf-dv class="r-inf" role="4"><span class="infy-cont">8</span></inf-dv>
+    </inf-bx>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'r-inf','l-inf')" class="inf-ar lf"><svg class="ion" viewBox="0 0 512 512"><path d="M328 112L184 256l144 144"/></svg></button>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'l-inf','r-inf')" class="inf-ar rt"><svg class="ion" viewBox="0 0 512 512"><path d="M184 112l144 144-144 144"/></svg></button>
+  </infy>
+  <br>
+  <br>
+  <br>
+  <br>
+  <infy bnr>
+    <inf-bx aria-label="true" aria-live="">
+      <inf-dv class="l-inf" role="4"><span class="infy-cont">0</span></inf-dv>
+      <inf-dv class="l-inf" role="3"><span class="infy-cont">1</span></inf-dv>
+      <inf-dv class="l-inf" role="2"><span class="infy-cont">2</span></inf-dv>
+      <inf-dv class="l-inf" role="1"><span class="infy-cont">3</span></inf-dv>
+      <inf-dv class="c-inf" role="0"><span class="infy-cont">4</span></inf-dv>
+      <inf-dv class="r-inf" role="1"><span class="infy-cont">5</span></inf-dv>
+      <inf-dv class="r-inf" role="2"><span class="infy-cont">6</span></inf-dv>
+      <inf-dv class="r-inf" role="3"><span class="infy-cont">7</span></inf-dv>
+      <inf-dv class="r-inf" role="4"><span class="infy-cont">8</span></inf-dv>
+    </inf-bx>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'r-inf','l-inf')" class="inf-ar lf"><svg class="ion" viewBox="0 0 512 512"><path d="M328 112L184 256l144 144"/></svg></button>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'l-inf','r-inf')" class="inf-ar rt"><svg class="ion" viewBox="0 0 512 512"><path d="M184 112l144 144-144 144"/></svg></button>
+  </infy>
+</body>
+<script>
+  function infy_next(bx,a,b){
+    bx.ariaLabel='';
+    setTimeout(()=>bx.ariaLabel='true',500);
+    let arrA = bx.querySelectorAll(`.${a}`);
+    arrA.forEach((item, i) => {
+      let newrole = parseInt(item.getAttribute('role'))+1;
+      newrole = newrole%(arrA.length+1);
+      item.classList=`${a}`;
+      item.setAttribute("role",newrole);
+    });
+    let arrB = bx.querySelectorAll(`.${b}`);
+    arrB.forEach((item, i) => {
+      let newrole = parseInt(item.getAttribute('role'))-1;
+      newrole = newrole%arrB.length;
+      item.classList=`${b}`;
+      item.setAttribute("role",newrole);
+    });
+    let nowinfy=bx.querySelector('.c-inf[role="0"]');
+    let nextinfy=bx.querySelector(`.${b}[role="0"]`);
+    let leftinfy=bx.querySelector(`.${a}[role="0"]`);
+    nowinfy.classList=`${a}`
+    nowinfy.setAttribute("role",1);
+    leftinfy.classList=`${b}`;
+    leftinfy.setAttribute("role",arrB.length);
+    nextinfy.classList='c-inf';
+    nextinfy.setAttribute("role",0);
+  }
+  document.querySelectorAll('inf-bx').forEach((item, i) => {
+    item.onwheel=()=>{
+      event.preventDefault();
+      if(item.ariaLabel){
+        event.wheelDelta<0?infy_next(item,'l-inf','r-inf'):infy_next(item,'r-inf','l-inf');
+      }
+    }
+    item.ontouchstart=(e)=>item.ariaLive=e.changedTouches[0].pageX;
+    item.ontouchend=()=>item.ariaLive='0';
+    item.ontouchcancel=()=>item.ariaLive='0';
+    item.ontouchmove=(e)=>{
+      event.preventDefault();
+      if(item.ariaLabel){
+        let preX = parseInt(item.ariaLive);
+        let newX = e.changedTouches[0].pageX;
+        let offX = preX-newX;
+        if(offX>=100){
+          infy_next(item,'l-inf','r-inf');
+        } else if(offX<=-100){
+          infy_next(item,'r-inf','l-inf');
+        }
+      }
+    };
+  });
+</script>
+</html>
