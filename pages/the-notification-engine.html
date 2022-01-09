@@ -433,7 +433,6 @@
     </nt-bd>
     <nt-op>
       ${ntmake.ntOpts.map(e=>`<nt-btn onclick="${optnClicks[e]}">${e}</nt-btn>`).join('')}
-      <nt-gr>
       <nt-bth onclick="ntHide(this.parentElement.parentElement)"/>
     </nt-op>`;
     ntBox.insertBefore(nt, ntBox.firstChild);

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HELLORGE</title>
+  <style media="screen">
+    body{
+      background-color: #181818;
+      margin: 0;
+      color: var(--el-clr1);
+      user-select: none;
+      --el-clr1: crimson;
+      --el-clr2: red;
+    }
+    logo{
+      display: block;
+      position: relative;
+      --el-width: 99.8vw;
+      width: var(--el-width);
+      height: 99.8vh;
+    }
+    letters{
+      display: flex;
+      height: 100%;
+      width: 100%;
+      border: 1px solid var(--el-clr1);
+      box-sizing: border-box;
+      margin: .1vh .1vw;
+      overflow: hidden;
+      align-items: center;
+    }
+    letter{
+      outline: 1px solid var(--el-clr1);
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: 0;
+      position: relative;
+      text-align: center;
+      font-size: min(11vw, 11vh);
+      display: flex;
+      flex-direction: column;
+      margin-top: 100%;
+      animation: letterscroll 2s linear 0s 1 forwards;
+    }
+    letter:nth-child(even){
+      margin-top: -100%;
+    }
+    glyphs:hover, glyphs.glow{
+      cursor: pointer;
+      animation: fireglyphs 2s linear 0s infinite forwards alternate;
+    }
+    glyphs.glow{
+      color: #fff;
+    }
+    @keyframes fireglyphs {
+      from{text-shadow: 0 5px 5px var(--el-clr1), 0 -5px 5px var(--el-clr2), 1px 0px 5px var(--el-clr2), 0 0 5px var(--el-clr1)}
+      to{text-shadow: 0 2px 5px var(--el-clr2), 0 -1px 5px var(--el-clr1), -5px -3px 5px var(--el-clr1), 1px 0 5px var(--el-clr2), 0 0 2px white}
+    }
+    @keyframes letterscroll {
+      to{margin-top:0vh}
+    }
+    #canvas{
+      position: absolute;
+      top: 0%;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <logo>
+      <canvas id="canvas"></canvas>
+      <letters>
+        <letter id="H">
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+        </letter>
+        <letter id="E">
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+        </letter>
+        <letter id="L">
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+        </letter>
+        <letter id="L">
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+        </letter>
+        <letter id="O">
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+        </letter>
+        <letter id="R">
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+        </letter>
+        <letter id="G">
+          <glyphs>G</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+        </letter>
+        <letter id="E">
+          <glyphs>E</glyphs>
+          <glyphs>H</glyphs>
+          <glyphs>E</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>L</glyphs>
+          <glyphs>O</glyphs>
+          <glyphs>R</glyphs>
+          <glyphs>G</glyphs>
+        </letter>
+      </letters>
+    </logo>
+  </header>
+</body>
+<script type="text/javascript">
+  document.body.onmousedown=document.body.ontouchstart=()=>{
+    // console.log('touchdown');
+  }
+  lights=[];
+  document.querySelectorAll('glyphs').forEach(el => {
+    el.onclick=(e)=>{
+      el.classList.toggle('glow');
+      let dimensions = el.getBoundingClientRect();
+      lights.push({x:dimensions.x+(dimensions.width/2) ,y:dimensions.y+(dimensions.height/2) })
+      requestAnimationFrame(THOR);
+    }
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  var timeDelta,timeLast = 0;
+
+  function THOR(timeNow) {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    timeDelta = timeNow - timeLast;
+    timeLast = timeNow;
+
+    for(let i=0;i<lights.length;i++){
+
+      let lightFrame = lights[i];
+      let lightNext = lights[i+1];
+      let coorX = canvas.width*(lightFrame.x/window.innerWidth);
+      let coorY = canvas.height*(lightFrame.y/window.innerHeight);
+
+      ctx.beginPath();
+      ctx.moveTo(coorX, coorY);
+      ctx.arc(coorX, coorY, 3, 0, Math.PI * 2);
+      ctx.strokeStyle=ctx.fillStyle = `rgba(${Math.random()*(255-200) + 200}, 00, 00, 1`;
+      ctx.fill();
+
+      if(lightNext){
+        let lineX = canvas.width*(lightNext.x/window.innerWidth);
+        let lineY = canvas.height*(lightNext.y/window.innerHeight);
+        let ix = Math.abs(coorX-lineX);
+        let iy = Math.abs(coorY-lineY);
+        let maxStep = Math.max(ix, iy)/10;
+        let [prevX,prevY] = [coorX,coorY];
+        for(let i=1;i<=maxStep;i++){
+          let newX,newY;
+
+          ix = (Math.abs(coorX-lineX) * i/maxStep );
+          iy = (Math.abs(coorY-lineY) * i/maxStep );
+
+          let noise = (Math.random() * (.3-.1) + .1)*i;
+          noise = (noise - ( noise * (i/maxStep) ));
+          // if(iy>ix){
+          //   ix= ix + ( coorX>lineX? (0-noise) : noise );
+          // } else {
+          //   iy= iy + ( coorY>lineY? (0-noise) : noise );
+          // }
+
+          newX = coorX + ( coorX>lineX? (0-ix) : ix );
+          newY = coorY + ( coorY>lineY? (0-iy) : iy );
+          if(i%2==0){
+            noiseX=noise*5;
+            noiseY=0;
+          } else {
+            noiseY=noise*5;
+            noiseX=0;
+          }
+          // ctx.lineTo(newX+noise*10, newY);
+          // ctx.moveTo(newX+noise*10, newY);
+          // ctx.lineTo(newX, newY-noise*10);
+          // ctx.strokeStyle = `rgba(255,${255*noise*3},${255*noise*3},.1)`;
+          // ctx.moveTo(prevX, prevY);
+          ctx.lineTo(newX+noiseX, newY+noiseY);
+          ctx.moveTo(newX+noiseX, newY+noiseY);
+          [prevX, prevY] = [newX, newY];
+          ctx.strokeStyle = `rgba(255,0,0,1)`;
+          ctx.stroke();
+        }
+      }
+    }
+
+    setTimeout(()=>{
+      requestAnimationFrame(THOR);
+    },150)
+  }
+</script>
+</html>
