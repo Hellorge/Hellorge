@@ -10,18 +10,6 @@
       width: 0px;
       background-color: transparent;
     }
-    /* body::-webkit-scrollbar{
-      width: 2px;
-    }
-    body::-webkit-scrollbar-thumb{
-      width: .5vw;
-    border-radius:10px;
-    background-color: #ff7b01;
-    }
-    body::-webkit-scrollbar-track-piece:decrement{
-      background-color: #ff7b01;
-      width: .5vw;
-    } */
     body{
       background-color: #141418;
       margin: 0;
@@ -126,22 +114,15 @@
     <scrollup>Scroll Up</scrollup>
   </header>
   <main>
-    <center><big><h1>..cumming soon</h1></big></center>
+    <center><big><h1><del>cu</del><ins>co</ins>ming soon</h1></big></center>
   </main>
 </body>
 <script>
 document.documentElement.scrollTop=window.scrollTop=0;
 
-// try {
-//   window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
-//     get: function () { supportsPassive = true; }
-//   }));
-// } catch(e) {}
-
 var wheelOpt = { passive: false };
 var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
 
-// var supportsPassive = false;
 var keys = {37: 1, 38: 1, 39: 1, 40: 1};
 var lettersEl = document.querySelector('letters');
 var scrollupEl = document.querySelector('scrollup');
@@ -185,6 +166,7 @@ const canvasEl = document.querySelector('#canvas');
 
 var w = canvasEl.width = window.innerWidth;
 var h = canvasEl.height = window.innerHeight;
+var o = 1;
 
 function loop() {
 requestAnimationFrame(loop);
@@ -230,7 +212,7 @@ if (this.x >= w+this.size) {
 bx.prototype.update = function() {
 
 this.y += this.speed;
-
+this.opacity = o;
 if (this.y <= h) {
   this.x += this.shiftDirection;
   this.rotation += this.shiftDirection*this.speed/100;

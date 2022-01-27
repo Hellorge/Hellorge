@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>The Visualizer MK02</title>
+  <style media="screen">
+    body{
+      background-color: #141418;
+    }
+    .gradtext{
+      color: transparent;
+      background-image: linear-gradient(to right, red, blue, red);
+      -webkit-background-clip: text;
+      background-size: 200% 100%;
+      font-size: 3vw;
+      height: 100vh;
+      opacity: 0;
+      display: grid;
+      place-content: center;
+      animation: show 1s linear 2s 1 forwards, flow 5s linear 0s infinite alternate;
+    }
+    #canvas{
+      background-color: transparent;
+    }
+    #file{
+      color: #000;
+      height: 35px;
+      line-height: 35px;
+      padding: 0 1em;
+      cursor: pointer;
+      background-color: #f1f3f4;
+      border-radius: 50px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    #thefile{
+      display: none;
+    }
+    #audio{
+      /* transform: rotate3d(0, 0, 1, 270deg) translateY(13em); */
+      /* position: fixed; */
+      right: 0%;
+      top: 50%;
+      width: 30em;
+      height: 35px;
+      vertical-align: middle;
+    }
+    viz{
+      display: flex;
+      height: 300px;
+      align-items: var(--el-algn,flex-end);
+    }
+    viz[c]{
+      --el-algn: center;
+      --sr-bdrr: 40px;
+      --sr-wdth: 5px;
+      --sr-marg: 4px;
+    }
+    viz>sr{
+      flex-shrink: 0;
+      background-color: #fff;
+      height: 2em;
+      width: var(--sr-wdth,15px);
+      margin: 0 var(--sr-marg,1px);
+      border-radius: var(--sr-bdrr,0);
+    }
+    @keyframes show {
+      50%{opacity:1;font-size: 3vw;height: 100vh;}
+      70%{opacity:1;font-size: 3vw;height: 100vh;}
+      to{opacity:1;font-size: 1em;height: 7em;}
+    }
+    @keyframes flow {
+      from{background-position: 0% 0%;}
+      to{background-position: 200% 0%;}
+    }
+  </style>
+</head>
+<body>
+  <center class="gradtext"><pre><h1>The Visualizer | MK02</h1></pre></center>
+  <br>
+  <label id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
+  <audio id="audio" controls></audio>
+  <br>
+  <br>
+  <viz b></viz>
+  <a href="https://codepen.io/nfj525/pen/rVBaab">bars</a>
+  <br>
+  <viz c></viz>
+  <span style="color: red">homegrown</span>
+  <br>
+  <svg width="100%" height="300px" viewBox="0 0 100 100">
+    <g class="viz" fill="none" stroke="red">
+    </g>
+  </svg>
+  <span style="color: red">homegrown</span>
+</body>
+<script>
+
+  window.onload = function() {
+
+    var file = document.getElementById("thefile");
+    var audio = document.getElementById("audio");
+
+    file.onchange = function() {
+      var files = this.files;
+      audio.src = URL.createObjectURL(files[0]);
+      audio.load();
+      audio.play();
+      context = new AudioContext();
+      var src = context.createMediaElementSource(audio);
+      analyser = context.createAnalyser();
+
+      src.connect(analyser);
+      analyser.connect(context.destination);
+
+      analyser.fftSize = 256;
+
+      bufferLength=analyser.frequencyBinCount;
+
+      document.querySelectorAll('viz').forEach(e=>{
+        e.innerHTML='<sr></sr>'.repeat(bufferLength);
+      });
+
+      document.querySelectorAll('svg>.viz').forEach(e=>{
+        e.innerHTML='<circle cx="50%" cy="50%"></circle>'.repeat(Math.floor(bufferLength/4));
+      });
+
+      dataArray = new Uint8Array(bufferLength);
+
+      audio.play();
+      renderFrame();
+    };
+    function renderFrame() {
+      requestAnimationFrame(renderFrame);
+
+      analyser.getByteFrequencyData(dataArray);
+
+      let vizs = [...document.querySelectorAll('viz')].map(e=>e.querySelectorAll('sr'));
+      let svvz = [...document.querySelectorAll('svg>.viz')].map(e=>e.querySelectorAll('circle'));
+      for (var i = 0; i < vizs[0].length; i++) {
+        barHeight = dataArray[i];
+
+        var r = barHeight + (25 * (i/bufferLength));
+        var g = 250 * (i/bufferLength);
+        var b = 50;
+
+        vizs.forEach(e=>{
+          e[i].style.height=`${r}px`;
+          e[i].style.backgroundColor=`rgb(${r},${g},${b})`;
+        });
+        svvz.forEach(e=>{
+          if(i%2){
+            let el = e[Math.floor(i/4)];
+            el.setAttribute('r',(r*.5)+'px');
+            el.setAttribute('stroke',`rgb(${r},${g},${b})`);
+          }
+        });
+
+      }
+    }
+  };
+</script>
+</html>

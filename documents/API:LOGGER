@@ -1,0 +1,85 @@
+Api : logger
+
+
+//Schema
+//
+
+	Initial call :: POST :: [ *email/mobile (parents/kids won't be specified) ]
+
+	     • Send an otp to specified mobile (yeah only the
+		one in request not every number on the account)
+		and related email
+	       
+	     -- if not registered:
+		  • Request registration
+
+	Need to register :: PUT::  [ name*, mail*, number*, otp*, otp_id*, referral_code ]
+
+	Login :: PATCH :: [otp*, otp_id*]
+
+	Logout of all devices :: DELETE ::
+
+	Check token :: GET ::
+
+//
+//end
+
+
+//Pseudocode
+//
+
+	:: POST ::
+	       try{
+		  otp = SendOtp();
+		  if( user-exists ){
+		    CODE = LGR999;
+		  } else {
+		    CODE = LGR998;
+		  }
+		  return {status: success, code: CODE, data: otp}
+	       } catch (err) {
+	       	   return { status: error, code: LGR001, msg: err.message}
+	       }
+	      
+	:: PUT ::
+	      if ( otp-match ){
+		 try{
+		    CreateUser(req);
+		    return LoginUser(req); //return { status: success, code: LGR997, data: {...}}
+		 } catch (err) {
+		    return { status: error, code: LGR002, msg: err.message}
+		 }
+	      } else {
+		 return { status: error, code: LGR003, msg: "opt didn't match" }
+	      }
+
+	:: PATCH ::
+	      if( otp-match ){
+		 try{
+	 	    return LoginUser(req); //return { status: success, code: LGR996, data: {...}}  
+		 } catch (err){
+		    return { status: error, code: LGR004, msg: err.message}
+		 }
+	      } else {
+	      	 return { status: error, code: LGR005, msg: "opt didn't match" }
+	      }
+	      
+	:: DELETE ::
+	      try{
+		 delete-all-tokens-for-user-from-auth
+		 return {status: success, code: LGR995, msg: 'logged out of all devices'}
+	      } catch (err) {
+		 return {status: error, code: LGR006, msg: err.message}
+	      }
+
+	:: GET ::
+	      try{
+		 if( verify-bearer-token ){
+		    return {status: success, code: LGR994, msg: 'token is valid'}
+		 } else {
+		    return {status: error, code: LGR007, msg: 'invalid token'}
+		 }
+	      } catch (err) {
+		 return {status: error, code: LGR008, msg: err.message}
+	      }
+      
