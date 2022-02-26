@@ -920,23 +920,30 @@
   </style>
 </head>
 <body>
-  <gtele>
-    <button class="gtele-bt">
-      <!-- <span class="gtele-nm">IN</span> -->
-      <span class="gtele-fl cfl-in"></span>
-      <span class="gtele-I"></span>
-      <span class="gtele-cd">+91</span>
-    </button>
-    <input class="gtele-io" type="text" placeholder="Email or Phone">
-    <div class="gtele-li">
-      <input class="gtele-fn" type="search" oninput="gteleFind(this,this.value);" placeholder="search country/code">
-      <div class="gtele-li-cd" scrBxAlt>
-
-      </div>
-    </div>
-  </gtele>
 </body>
 <script type="text/javascript">
+  class gTele {
+    constructor(_feat={}) {
+      let item = document.createElement('gtele');
+      let attributes = _feat.attr||[];
+      item.innerHTML=`<button class="gtele-bt">
+        <span class="gtele-fl cfl-in"></span>
+        <span class="gtele-I"></span>
+        <span class="gtele-cd">+91</span>
+      </button>
+      <input class="gtele-io" ${attributes.map(e=>`${e.n}="${e.v}"`).join(' ')} type="text" placeholder="Email or Phone">
+      <div class="gtele-li">
+        <input class="gtele-fn" type="search" oninput="gteleFind(this,this.value);" placeholder="search country/code">
+        <div class="gtele-li-cd" scrBxAlt></div>
+      </div>`;
+      item.querySelector('.gtele-bt').onclick=()=>item.classList.toggle('open');
+      item.querySelector('.gtele-io').oninput=()=>{
+        item.classList=`${gteleVali(item.querySelector('.gtele-io'))}`;
+      }
+      item.querySelector('.gtele-li-cd').innerHTML=gteleList;
+     return item;
+    }
+  }
   var e = [
           ["Afghanistan (‫افغانستان‬‎)", "af", "93"],
           ["Albania (Shqipëri)", "al", "355"],
@@ -1234,13 +1241,9 @@
       ];
 
   let gteleList=e.map(e=>`<div onclick="gteleSel(this.parentElement.parentElement.parentElement,'${e[1]}','${e[2]}');" class="gtele-li-it"><span class="gtele-li-fl gtele-fl cfl-${e[1]}"></span> +${e[2]} <span class="gtele-nd">${e[0]}</span></div>`).join('');
-  document.querySelectorAll('gtele').forEach((item, i) => {
-    item.querySelector('.gtele-bt').onclick=()=>item.classList.toggle('open');
-    item.querySelector('.gtele-io').oninput=()=>{
-      item.classList=`${gteleVali(item.querySelector('.gtele-io'))}`;
-    };
-    item.querySelector('.gtele-li-cd').innerHTML=gteleList;
-  });
+
+  let inputMobile = new gTele();
+  document.body.appendChild(inputMobile);
 
   function gteleSel(el,ca,cd){
     event.stopPropagation();
