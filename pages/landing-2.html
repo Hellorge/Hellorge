@@ -139,7 +139,7 @@ window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desk
 window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
 window.addEventListener('keydown', preventDefaultForScrollKeys, false);
 window.addEventListener('touchstart', ()=>{window.qYp=event.touches[0].pageY;window.trem=true}, false);
-window.addEventListener('touchstop', ()=>{window.trem=false}, false);
+window.addEventListener('touchend', ()=>{window.trem=false}, false);
 
 function preventDefaultForScrollKeys(e){keys[e.keyCode]?preventDefault(e):'';}
 function preventDefaultold(e){e.preventDefault()}
