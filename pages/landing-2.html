@@ -135,8 +135,11 @@ var lettersEl = document.querySelector('letters');
 var scrollupEl = document.querySelector('scrollup');
 
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
-document.body.addEventListener('scroll', preventDefaultold, wheelOpt); // mobile
+window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
 window.addEventListener('keydown', preventDefaultForScrollKeys, false);
+window.addEventListener('touchstart', ()=>{
+  window.qYp=event.touches[0].pageY;
+}, false);
 
 function preventDefaultForScrollKeys(e){keys[e.keyCode]?preventDefault(e):'';}
 function preventDefaultold(e){e.preventDefault()}
@@ -145,19 +148,17 @@ function preventDefaultold(e){e.preventDefault()}
 setTimeout(()=>{
   window.removeEventListener(wheelEvent,preventDefaultold, wheelOpt);
   window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
-  document.body.removeEventListener('scroll',preventDefaultold, wheelOpt);
-  document.body.addEventListener('scroll', preventDefault, wheelOpt); // mobile
+  window.removeEventListener('touchmove',preventDefaultold, wheelOpt);
+  window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
   window.parallaxY=0;
 },4000)
 
 function preventDefault(e){
-  console.log(e);
-  let Y = e.deltaY;
+
+  let Y = e.deltaY|| (window.qYp - e.touches[0].pageY);
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   if(!Y||koef)return;
-
-  console.log('nrt');
 
   e.preventDefault();
   e.stopPropagation();
