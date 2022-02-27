@@ -156,7 +156,7 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  if(!e.deltaY||(parallaxY+e.deltaY)>100)return;
+  if(!e.deltaY||(parallaxY)>=100)return;
 
   e.preventDefault();
   e.stopPropagation();
