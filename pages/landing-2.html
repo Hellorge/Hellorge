@@ -90,11 +90,6 @@
       to{opacity: 1;}
     }
     main{
-      /* height: 100vh;
-      display: grid;
-      place-content: center; */
-    }
-    #loop_ul{
       max-height: calc(100vh - var(--hh-px));
       overflow: auto;
     }
@@ -138,6 +133,7 @@ var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewh
 var keys = {37: 1, 38: 1, 39: 1, 40: 1};
 var lettersEl = document.querySelector('letters');
 var scrollupEl = document.querySelector('scrollup');
+var main = document.querySelector('main');
 
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
 window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
@@ -156,7 +152,7 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  if(!e.deltaY||(parallaxY)>=100)return;
+  if(!e.deltaY||(parallaxY+main.scrollTop)>100)return;
 
   e.preventDefault();
   e.stopPropagation();
