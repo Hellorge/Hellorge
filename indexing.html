@@ -34,8 +34,7 @@
 <script>
 
 
-    // let arr = '{{$params}}'.replaceAll('&quot;',`'`);
-    let arr = '<?php echo json_encode(json_decode($params,TRUE)); ?>'
+    let arr = '<?php echo json_encode(json_decode(scandir("/pages"),TRUE)); ?>'
     let meta = JSON.parse(arr);
     for(let j=0;j<meta.length;j++){
         document.querySelector('#loop_ul').innerHTML += `<a href="{{env('GUITAA_URL')}}/hellorge/${meta[j].replaceAll('.blade.php','')}" class="menu_item"><div class="info"><span>${meta[j].replaceAll('.blade.php','')}</span></div>
