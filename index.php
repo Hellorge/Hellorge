@@ -1,5 +1,5 @@
 <?php
 $dir = "pages/";
 $a = scandir($dir);
-include_once("indexing.html");
+include_once("landing-2.html");
 ?>
