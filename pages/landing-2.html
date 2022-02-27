@@ -246,7 +246,7 @@ const confs = new Array(confNum).fill().map(_ => new bx());
 
 loop();
 
-let meta = [JSON.parse('<?php echo json_encode($a); ?>')];
+let meta = JSON.parse('<?php echo json_encode($a); ?>');
 document.querySelector('#loop_ul').innerHTML=meta.map(e=>`<a href="/pages/${e}" class="menu_item">${e.replaceAll('.html','')}</a>`).join('');
 </script>
 </html>
