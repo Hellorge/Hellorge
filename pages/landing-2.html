@@ -152,7 +152,8 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  if(!e.deltaY||(parallaxY+main.scrollTop)>100)return;
+  console.log(parallaxY,main.scrollTop);
+  if(!e.deltaY||(parallaxY+main.scrollTop)>=100)return;
 
   e.preventDefault();
   e.stopPropagation();
