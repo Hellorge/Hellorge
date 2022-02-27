@@ -6,6 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>HELLORGE</title>
   <style media="screen">
+    html,body{
+      height: 100%;
+      overflow-y: auto;
+    }
     ::-webkit-scrollbar{
       width: 0px;
       background-color: transparent;
@@ -19,7 +23,6 @@
       --el-clr2: 255,0,0;
       --llx-time: 1s;
       --hh-px: 100vh;
-      /* padding-top: var(--hh-px); */
       font-family: serif;
       transition: var(--llx-time,1s);
     }
@@ -27,19 +30,19 @@
       position: sticky;
       top: 0%;
       width: 100%;
+      height: var(--hh-px);
+      transition: inherit;
     }
     logo{
       display: block;
       position: relative;
-      height: var(--hh-px);
-      transition: var(--llx-time,1s);
+      height: 100%;
+      transition: inherit;
     }
     letters{
       display: flex;
       height: 100%;
-      /* width: 100%; */
       font-size: 12vw;
-      /* border: 1px solid rgba(var(--el-clr1),1); */
       box-sizing: border-box;
       margin: .1vh .1vw;
       overflow: hidden;
@@ -90,11 +93,11 @@
       to{opacity: 1;}
     }
     main{
-      max-height: calc(100vh - var(--hh-px));
-      overflow: auto;
+      transition: inherit;
     }
     #loop_ul a{
       font-size: 2em;
+      display: block;
     }
   </style>
 </head>
@@ -121,7 +124,7 @@
   <br><br>
 </body>
 <script>
-document.documentElement.scrollTop=window.scrollTop=0;
+window.scrollTo(0,0);
 
 var wheelOpt = { passive: false };
 var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
@@ -129,7 +132,6 @@ var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewh
 var keys = {37: 1, 38: 1, 39: 1, 40: 1};
 var lettersEl = document.querySelector('letters');
 var scrollupEl = document.querySelector('scrollup');
-var main = document.querySelector('main');
 
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
 window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
@@ -149,8 +151,7 @@ setTimeout(()=>{
 
 function preventDefault(e){
   let Y = e.deltaY;
-  let koef = parallaxY+main.scrollTop+Math.min(Y,0)>=100;
-
+  let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   if(!Y||koef)return;
 
@@ -245,12 +246,7 @@ const confs = new Array(confNum).fill().map(_ => new bx());
 
 loop();
 
-
-let arr = '<?php echo json_encode($a); ?>'
-let meta = JSON.parse(arr);
-for(let j=0;j<meta.length;j++){
-    document.querySelector('#loop_ul').innerHTML += `<a href="/pages/${meta[j]}" class="menu_item"><div class="info"><span>${meta[j].replaceAll('.html','')}</span></div>
-    </a>`
-}
+let meta = [JSON.parse('<?php echo json_encode($a); ?>')];
+document.querySelector('#loop_ul').innerHTML=meta.map(e=>`<a href="/pages/${e}" class="menu_item">${e.replaceAll('.html','')}</a>`).join('');
 </script>
 </html>
