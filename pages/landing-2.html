@@ -127,6 +127,7 @@
 <script>
 window.scrollTo(0,0);
 
+var timeout = false;
 var wheelOpt = { passive: false };
 var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
 
@@ -154,11 +155,16 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-
   let Y = e.deltaY|| (window.qYp - e.touches[0].pageY);
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
-  if(!Y||koef)return;
+  setTimeout(function () {
+    timeout=false;
+  }, 1000);
+
+  if(!Y||koef||timeout)return;
+
+  timeout=true;
 
   e.preventDefault();
   e.stopPropagation();
@@ -169,10 +175,9 @@ function preventDefault(e){
   let logoHeight = (retroVar*(window.innerHeight-48))+48;
   lettersEl.style.fontSize=(((window.innerWidth*0.12-32)*retroVar)+32)+'px';
   lettersEl.style.borderColor=`rgba(var(--el-clr1),${((retroVar))})`;
-  scrollupEl.style.display='none';
+  scrollupEl?.remove();
   document.body.style.setProperty('--hh-px', logoHeight+'px');
 
-  w = canvasEl.width = window.innerWidth;
   h = canvasEl.height = logoHeight;
 }
 
