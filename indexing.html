@@ -37,7 +37,7 @@
     let arr = '<?php echo json_encode($a); ?>'
     let meta = JSON.parse(arr);
     for(let j=0;j<meta.length;j++){
-        document.querySelector('#loop_ul').innerHTML += `<a href="{{env('GUITAA_URL')}}/hellorge/${meta[j].replaceAll('.blade.php','')}" class="menu_item"><div class="info"><span>${meta[j].replaceAll('.blade.php','')}</span></div>
+        document.querySelector('#loop_ul').innerHTML += `<a href="/pages/${meta[j]}" class="menu_item"><div class="info"><span>${meta[j].replaceAll('.html','')}</span></div>
         </a>`
     }
 </script>
