@@ -19,12 +19,12 @@
       --el-clr2: 255,0,0;
       --llx-time: 1s;
       --hh-px: 100vh;
-      padding-top: var(--hh-px);
+      /* padding-top: var(--hh-px); */
       font-family: serif;
       transition: var(--llx-time,1s);
     }
     header{
-      position: fixed;
+      position: sticky;
       top: 0%;
       width: 100%;
     }
@@ -116,13 +116,9 @@
     <scrollup>Scroll Up</scrollup>
   </header>
   <main>
-    <div class="menu" id="loop_ul">
-        <div class="menu_item" id="test">
-            <div class="info"></div>
-        </div>
-    </div>
-    <br><br>
+    <div class="menu" id="loop_ul"></div>
   </main>
+  <br><br>
 </body>
 <script>
 document.documentElement.scrollTop=window.scrollTop=0;
@@ -152,16 +148,16 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  console.log(parallaxY,main.scrollTop,e.deltaY);
   let Y = e.deltaY;
-  let koef = parallaxY+main.scrollTop-(Y<0?Y:0)>=100;
+  let koef = parallaxY+main.scrollTop+Math.min(Y,0)>=100;
 
-  if(!e.deltaY||koef)return;
+
+  if(!Y||koef)return;
 
   e.preventDefault();
   e.stopPropagation();
 
-  parallaxY=Math.max(0,Math.min(100,parallaxY+e.deltaY));
+  parallaxY=Math.max(0,Math.min(100,parallaxY+Y));
 
   let retroVar = (100 - Math.min(parallaxY,100))/100;
   let logoHeight = (retroVar*(window.innerHeight-48))+48;
