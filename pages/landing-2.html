@@ -138,9 +138,8 @@ var scrollupEl = document.querySelector('scrollup');
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
 window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
 window.addEventListener('keydown', preventDefaultForScrollKeys, false);
-window.addEventListener('touchstart', ()=>{
-  window.qYp=event.touches[0].pageY;
-}, false);
+window.addEventListener('touchstart', ()=>{window.qYp=event.touches[0].pageY;window.trem=true}, false);
+window.addEventListener('touchstop', ()=>{window.trem=false}, false);
 
 function preventDefaultForScrollKeys(e){keys[e.keyCode]?preventDefault(e):'';}
 function preventDefaultold(e){e.preventDefault()}
@@ -160,7 +159,7 @@ function preventDefault(e){
 
   setTimeout(function () {
     timeout=false;
-  }, e.type=='touchmove'?100:10);
+  }, e.type=='touchmove'&&window.trem?100:1);
 
   if(!Y||koef)return;
 
