@@ -151,10 +151,13 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
+  console.log(e);
   let Y = e.deltaY;
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   if(!Y||koef)return;
+
+  console.log('nrt');
 
   e.preventDefault();
   e.stopPropagation();
