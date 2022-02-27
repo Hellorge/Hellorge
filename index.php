@@ -1,1 +1,3 @@
-<?php include_once("indexing.html"); ?>
+<?php
+$dir = "pages/";
+include_once("indexing.html"); ?>
