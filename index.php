@@ -1,4 +1,5 @@
 <?php
 $dir = "pages/";
 $a = scandir($dir);
-print_r($a); ?>
+include_once("indexing.html");
+?>
