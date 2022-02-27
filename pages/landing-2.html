@@ -127,6 +127,7 @@
 <script>
 window.scrollTo(0,0);
 
+var timeout = false;
 var wheelOpt = { passive: false };
 var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
 
@@ -157,10 +158,18 @@ function preventDefault(e){
   let Y = e.deltaY|| (window.qYp - e.touches[0].pageY);
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
+  setTimeout(function () {
+    timeout=false;
+  }, 1000);
+
   if(!Y||koef)return;
+
 
   e.preventDefault();
   e.stopPropagation();
+
+  if(timeout)return;
+  timeout=true;
 
   parallaxY=Math.max(0,Math.min(100,parallaxY+Y));
 
