@@ -135,7 +135,7 @@ var lettersEl = document.querySelector('letters');
 var scrollupEl = document.querySelector('scrollup');
 
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
-document.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
+document.body.addEventListener('scroll', preventDefaultold, wheelOpt); // mobile
 window.addEventListener('keydown', preventDefaultForScrollKeys, false);
 
 function preventDefaultForScrollKeys(e){keys[e.keyCode]?preventDefault(e):'';}
@@ -145,8 +145,8 @@ function preventDefaultold(e){e.preventDefault()}
 setTimeout(()=>{
   window.removeEventListener(wheelEvent,preventDefaultold, wheelOpt);
   window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
-  document.removeEventListener('touchmove',preventDefaultold, wheelOpt);
-  document.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
+  document.body.removeEventListener('scroll',preventDefaultold, wheelOpt);
+  document.body.addEventListener('scroll', preventDefault, wheelOpt); // mobile
   window.parallaxY=0;
 },4000)
 
