@@ -94,7 +94,10 @@
       display: grid;
       place-content: center; */
     }
-
+    #loop_ul{
+      max-height: calc(100vh - var(--hh-px));
+      overflow: auto;
+    }
     #loop_ul a{
       font-size: 2em;
     }
@@ -153,7 +156,7 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  if(!e.deltaY)return;
+  if(!e.deltaY||e.deltaY>100)return;
 
   e.preventDefault();
   e.stopPropagation();
