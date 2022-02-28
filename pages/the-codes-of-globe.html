@@ -837,14 +837,15 @@
   .gtele-bt:hover{
     box-shadow: 0 1px 6px -5px #000;
   }
-  .gtele-bt::after{
-    content: '⏷';
+  .gtele-ar{
+    height: 1em;
+    width: 1em;
     transform: rotateX(var(--arr-row));
     display: inline-block;
     transform-origin: center;
     line-height: 1em;
     transition: .1s;
-    vertical-align: bottom;
+    vertical-align: middle;
     margin-right: 5px;
   }
   .gtele-I{
@@ -866,9 +867,8 @@
     width: 100%;
     background-color: #fff;
     transition: .1s;
-    position: absolute;
+    position: fixed;
     top: 0%;
-    margin-top: 1.5em;
     left: 0;
     max-height: var(--list-height);
     outline: #101010 auto var(--out-line);
@@ -925,25 +925,46 @@
   class gTele {
     constructor(_feat={}) {
       let item = document.createElement('gtele');
-      let attributes = _feat.attr||[];
-      item.innerHTML=`<button class="gtele-bt">
-        <span class="gtele-fl cfl-in"></span>
-        <span class="gtele-I"></span>
-        <span class="gtele-cd">+91</span>
-      </button>
-      <input class="gtele-io" ${attributes.map(e=>`${e.n}="${e.v}"`).join(' ')} type="text" placeholder="Email or Phone">
-      <div class="gtele-li">
-        <input class="gtele-fn" type="search" oninput="gteleFind(this,this.value);" placeholder="search country/code">
-        <div class="gtele-li-cd" scrBxAlt></div>
-      </div>`;
-      item.querySelector('.gtele-bt').onclick=()=>item.classList.toggle('open');
-      item.querySelector('.gtele-io').oninput=()=>{
-        item.classList=`${gteleVali(item.querySelector('.gtele-io'))}`;
-      }
-      item.querySelector('.gtele-li-cd').innerHTML=gteleList;
+      item.classList.add('closeOnbodyClick');
+
+      let attributes = _feat.attr||{};
+      let inputattr = attributes['gtele-io']||[];
+      let ccodeattr = attributes['gtele-cd']||[];
+
+      let d_code = _feat.code||'+91';
+      let d_numb = _feat.numb||'';
+
+      let inp = document.createElement('input');
+      inp.classList.add('gtele-io');
+      inputattr.forEach(e=>{
+        inp.setAttribute(e.n,e.v);
+      });
+      inp.setAttribute('value',d_numb);
+      inp.setAttribute('oninput',`gteleVali(this)`);
+
+      let cds = document.createElement('div');
+      cds.classList.add('gtele-li-cd');
+      cds.setAttribute('scrBxAlt',true);
+      cds.innerHTML=gteleList;
+      let lst = document.createElement('div');
+      lst.classList.add('gtele-li');
+      lst.innerHTML=`<input class="gtele-fn" autocomplete="off" id="sdfghj" type="search" oninput="gteleFind(this,this.value);" placeholder="search country/code">`;
+      lst.appendChild(cds);
+
+      let btn = document.createElement('button');
+      btn.setAttribute('type','button');
+      btn.classList.add('gtele-bt');
+      btn.innerHTML=`<span class="gtele-fl ${cds.querySelector(`.ccd-${d_code.replaceAll('+','')}`).classList}"></span>
+      <span class="gtele-I"></span>
+      <span class="gtele-cd" ${ccodeattr.map(e=>`${e.n}="${e.v}"`).join(' ')}>${d_code}</span>
+      <svg class="gtele-ar" viewBox="0 0 512 512"><path d="M98 190.06l139.78 163.12a24 24 0 0036.44 0L414 190.06c13.34-15.57 2.28-39.62-18.22-39.62h-279.6c-20.5 0-31.56 24.05-18.18 39.62z"/></svg>`;
+      btn.setAttribute('onclick',`gteleOpen(this.parentElement)`);
+
+      item.append(btn,inp,lst);
      return item;
     }
   }
+
   var e = [
           ["Afghanistan (‫افغانستان‬‎)", "af", "93"],
           ["Albania (Shqipëri)", "al", "355"],
@@ -1240,10 +1261,15 @@
           ["Åland Islands", "ax", "358", 1, ["18"]],
       ];
 
-  let gteleList=e.map(e=>`<div onclick="gteleSel(this.parentElement.parentElement.parentElement,'${e[1]}','${e[2]}');" class="gtele-li-it"><span class="gtele-li-fl gtele-fl cfl-${e[1]}"></span> +${e[2]} <span class="gtele-nd">${e[0]}</span></div>`).join('');
+  let gteleList=e.map(e=>`<div onclick="gteleSel(this.parentElement.parentElement.parentElement,'${e[1]}','${e[2]}');" class="gtele-li-it"><span class="gtele-li-fl gtele-fl cfl-${e[1]} ccd-${e[2]}"></span> +${e[2]} <span class="gtele-nd">${e[0]}</span></div>`).join('');
 
-  let inputMobile = new gTele();
-  document.body.appendChild(inputMobile);
+  window.addEventListener('wheel',()=>{
+    document.querySelectorAll('gtele').forEach(item=>{
+      if(event.path.indexOf(item)<0){
+        item.classList.remove('open');
+      }
+    });
+  });
 
   function gteleSel(el,ca,cd){
     event.stopPropagation();
@@ -1269,13 +1295,37 @@
     document.querySelectorAll('.gtele-li-fl.cfl-'+ini).forEach(el=>el.click());
   }
   function gteleVali(eli){
-    var emailVeri = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})/;
-    var phoneVeri = /^([0-9]{4,20})$/;
-    if (emailVeri.test(eli.value)) {
-      return 'email';
-    } else if(phoneVeri.test(eli.value)){
-      return 'phone';
-    }
+    // console.log(eli);
+    // var emailVeri = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})/;
+    // var phoneVeri = /^([0-9]{4,20})$/;
+    // if (emailVeri.test(eli.value)) {
+    //   return 'email';
+    // } else if(phoneVeri.test(eli.value)){
+    //   return 'phone';
+    // }
   }
+
+  function gteleOpen(el){
+    let eldm=el.getBoundingClientRect();
+    let leftsp = window.innerHeight-eldm.bottom;
+    let list = el.querySelector('.gtele-li');
+    let code = el.querySelector('.gtele-li-cd');
+    list.style='';
+    code.style='';
+    let searchmar = (parseFloat(getComputedStyle(el).fontSize)*2)+20;
+    if(code.scrollHeight>leftsp && eldm.top>leftsp){
+      list.style.top='10px';
+      list.style.bottom=(window.innerHeight-eldm.top)+'px';
+      code.style.maxHeight=(eldm.top-searchmar)+'px';
+    } else {
+      list.style.top=eldm.bottom+'px';
+      code.style.maxHeight=(leftsp-searchmar)+'px';
+    }
+    list.style.left=eldm.left+'px';
+    list.style.width=eldm.width+'px';
+    el.classList.toggle('open');
+  }
+
+  document.body.appendChild(new gTele());
 </script>
 </html>
