@@ -154,14 +154,7 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  console.log(e.type);
   let Y = e.deltaY||(window.qYp - e.touches[0].pageY);
-
-  if(e.touches){
-    let force = e.touches[0].force;
-    Y=Y+(10*force);
-  }
-
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   setTimeout(function () {
@@ -207,7 +200,6 @@ confs.forEach((conf) => {
 
 function bx () {
 //construct bx
-
 const colours = ['#00C09D', '#2D87B0', '#48485E','#EFFF1D'];
 
 this.x = Math.round(Math.random() * w);
