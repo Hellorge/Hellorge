@@ -127,7 +127,6 @@
 <script>
 window.scrollTo(0,0);
 
-var timeout = false;
 var wheelOpt = { passive: false };
 var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
 
@@ -138,8 +137,7 @@ var scrollupEl = document.querySelector('scrollup');
 window.addEventListener(wheelEvent, preventDefaultold, wheelOpt); // modern desktop
 window.addEventListener('touchmove', preventDefaultold, wheelOpt); // mobile
 window.addEventListener('keydown', preventDefaultForScrollKeys, false);
-window.addEventListener('touchstart', ()=>{window.qYp=event.touches[0].pageY;window.trem=true}, false);
-window.addEventListener('touchend', ()=>{window.trem=false}, false);
+window.addEventListener('touchstart', ()=>{window.qYp=event.touches[0].pageY;}, false);
 
 function preventDefaultForScrollKeys(e){keys[e.keyCode]?preventDefault(e):'';}
 function preventDefaultold(e){e.preventDefault()}
@@ -157,18 +155,10 @@ function preventDefault(e){
   let Y = e.deltaY||(window.qYp - e.touches[0].pageY);
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
-  setTimeout(function () {
-    timeout=false;
-  }, e.type=='touchmove'&&window.trem?100:1);
-
   if(!Y||koef)return;
-
 
   e.preventDefault();
   e.stopPropagation();
-
-  if(timeout)return;
-  timeout=true;
 
   parallaxY=Math.max(0,Math.min(100,parallaxY+Y));
 
