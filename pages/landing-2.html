@@ -154,7 +154,14 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
+  console.log(e.type);
   let Y = e.deltaY||(window.qYp - e.touches[0].pageY);
+
+  if(e.touches){
+    let force = e.touches[0].force;
+    Y=Y+(10*force);
+  }
+
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   setTimeout(function () {
@@ -257,7 +264,7 @@ const confs = new Array(confNum).fill().map(_ => new bx());
 
 loop();
 
-let meta = JSON.parse('<?php echo json_encode($a); ?>').filter(e=>e.length>=3);
+let meta = JSON.parse('<?php echo json_encode($a); ?>');
 document.querySelector('#loop_ul').innerHTML=meta.map(e=>`<a href="/pages/${e}" class="menu_item">${e.replaceAll('.html','')}</a>`).join('');
 </script>
 </html>
