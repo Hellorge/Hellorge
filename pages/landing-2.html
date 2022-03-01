@@ -191,7 +191,7 @@ confs.forEach((conf) => {
 
 function bx () {
 //construct bx
-const colours = ['#00C09D', '#2D87B0', '#48485E','#EFFF1D'];
+const colours = ['#00C09D','#2D87B0','#48485E','#EFFF1D','#ff6900','#f57eb6','#00ab8e','#00aec7'];
 
 this.x = Math.round(Math.random() * w);
 this.y = Math.round(Math.random() * h)-(h/2);
@@ -249,6 +249,6 @@ const confs = new Array(confNum).fill().map(_ => new bx());
 loop();
 
 let meta = JSON.parse('<?php echo json_encode($a); ?>');
-document.querySelector('#loop_ul').innerHTML=meta.map(e=>`<a href="/pages/${e}" class="menu_item">${e.replaceAll('.html','')}</a>`).join('');
+document.querySelector('#loop_ul').innerHTML=meta.map(e=>`<a href="/pages/${e}" class="menu_item">${e.replaceAll('.html','').replaceAll('-',' ')}</a>`).join('');
 </script>
 </html>
