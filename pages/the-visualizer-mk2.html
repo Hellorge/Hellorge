@@ -103,13 +103,22 @@
     var file = document.getElementById("thefile");
     var audio = document.getElementById("audio");
 
-    file.onchange = function() {
-      var files = this.files;
-      audio.src = URL.createObjectURL(files[0]);
-      audio.load();
-      audio.play();
+    // mic bgn
+    navigator.getUserMedia = navigator.getUserMedia
+                      || navigator.webkitGetUserMedia
+                      || navigator.mozGetUserMedia;
+    navigator.getUserMedia({video:false,audio:true},gotAudio,console.log);
+    // mic end
+
+    file.onchange = gotAudio;
+    function gotAudio(stream) {
+      // var files = this.files;
+      // audio.src = URL.createObjectURL(files[0]);
+      // audio.load();
+      // audio.play();
       context = new AudioContext();
-      var src = context.createMediaElementSource(audio);
+      // var src = context.createMediaElementSource(stream);
+      var src = context.createMediaStreamSource(stream);
       analyser = context.createAnalyser();
 
       src.connect(analyser);
@@ -129,7 +138,7 @@
 
       dataArray = new Uint8Array(bufferLength);
 
-      audio.play();
+      // audio.play();
       renderFrame();
     };
     function renderFrame() {
