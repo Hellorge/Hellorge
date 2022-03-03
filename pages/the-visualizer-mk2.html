@@ -24,7 +24,7 @@
     #canvas{
       background-color: transparent;
     }
-    #file{
+    .btnSources{
       color: #000;
       height: 35px;
       line-height: 35px;
@@ -46,6 +46,7 @@
       width: 30em;
       height: 35px;
       vertical-align: middle;
+      display: none;
     }
     viz{
       display: flex;
@@ -78,97 +79,145 @@
   </style>
 </head>
 <body>
-  <center class="gradtext"><pre><h1>The Visualizer | MK02</h1></pre></center>
+  <center class="gradtext">The Visualizer | MK02</center>
   <br>
-  <label id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
+  <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
   <audio id="audio" controls></audio>
+  <label class="btnSources" id="microphone">From Microphone</label>
+  <select class="btnSources" id="drawtype">
+    <option value="bars">Bars</option>
+    <option value="centered">Bars Centered</option>
+    <option value="circle">Circles</option>
+  </select>
+  <!-- <label class="btnSources">Full Screen</label> -->
   <br>
   <br>
-  <viz b></viz>
-  <a href="https://codepen.io/nfj525/pen/rVBaab">bars</a>
-  <br>
-  <viz c></viz>
-  <span style="color: red">homegrown</span>
-  <br>
-  <svg width="100%" height="300px" viewBox="0 0 100 100">
-    <g class="viz" fill="none" stroke="red">
-    </g>
-  </svg>
-  <span style="color: red">homegrown</span>
+  <canvas id="canvas"></canvas>
 </body>
 <script>
 
-  window.onload = function() {
+  var mic = document.querySelector('#microphone');
+  var file = document.getElementById("thefile");
+  var audio = document.getElementById("audio");
+  var context = null;
+  var srca = null;
+  var srcm = null;
 
-    var file = document.getElementById("thefile");
-    var audio = document.getElementById("audio");
+  file.onchange = function(){
+    if(context==null)context = new AudioContext();
+    var files = this.files;
+    audio = document.getElementById("audio");
+    audio.src = URL.createObjectURL(files[0]);
+    audio.style.display='initial';
+    audio.load();
+    audio.play();
 
-    // mic bgn
+    if(!srca)srca = context.createMediaElementSource(audio);
+    gotAudio(srca);
+    if(window.closeStream)closeStream();
+  };
+
+  mic.onclick = function(){
+    if(context==null)context = new AudioContext();
     navigator.getUserMedia = navigator.getUserMedia
                       || navigator.webkitGetUserMedia
                       || navigator.mozGetUserMedia;
-    navigator.getUserMedia({video:false,audio:true},gotAudio,console.log);
-    // mic end
+    navigator.getUserMedia({video:false,audio:true},(stream)=>{
+      srcm = context.createMediaStreamSource(stream);
+      gotAudio(srcm);
+      if(audio){
+        audio.style.display='';
+        audio.pause();
+        audio=null;
+      }
+      file.value='';
+      window.closeStream=function(){
+        stream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+      }
+    },console.log);
+  }
 
-    file.onchange = gotAudio;
-    function gotAudio(stream) {
-      // var files = this.files;
-      // audio.src = URL.createObjectURL(files[0]);
-      // audio.load();
-      // audio.play();
-      context = new AudioContext();
-      // var src = context.createMediaElementSource(stream);
-      var src = context.createMediaStreamSource(stream);
+
+    function gotAudio(src) {
       analyser = context.createAnalyser();
-
       src.connect(analyser);
-      analyser.connect(context.destination);
+      if(src.mediaElement)analyser.connect(context.destination);
 
       analyser.fftSize = 256;
 
       bufferLength=analyser.frequencyBinCount;
 
-      document.querySelectorAll('viz').forEach(e=>{
-        e.innerHTML='<sr></sr>'.repeat(bufferLength);
-      });
-
-      document.querySelectorAll('svg>.viz').forEach(e=>{
-        e.innerHTML='<circle cx="50%" cy="50%"></circle>'.repeat(Math.floor(bufferLength/4));
-      });
-
       dataArray = new Uint8Array(bufferLength);
 
-      // audio.play();
+      var canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctxanvas = canvas.getContext("2d");
+
+      WIDTH = canvas.width;
+      HEIGHT = canvas.height;
+
+      barWidth = (WIDTH / bufferLength);
+      barHeight=0;
+      var x = 0;
+
       renderFrame();
     };
+
     function renderFrame() {
       requestAnimationFrame(renderFrame);
 
+      x = 0;
+
       analyser.getByteFrequencyData(dataArray);
 
-      let vizs = [...document.querySelectorAll('viz')].map(e=>e.querySelectorAll('sr'));
-      let svvz = [...document.querySelectorAll('svg>.viz')].map(e=>e.querySelectorAll('circle'));
-      for (var i = 0; i < vizs[0].length; i++) {
-        barHeight = dataArray[i];
+      ctxanvas.fillStyle = "#000";
+      ctxanvas.fillRect(0, 0, WIDTH, HEIGHT);
+
+      for (var i = 0; i < bufferLength; i++) {
+        barHeight = Math.max(5,dataArray[i]);
 
         var r = barHeight + (25 * (i/bufferLength));
         var g = 250 * (i/bufferLength);
         var b = 50;
 
-        vizs.forEach(e=>{
-          e[i].style.height=`${r}px`;
-          e[i].style.backgroundColor=`rgb(${r},${g},${b})`;
-        });
-        svvz.forEach(e=>{
-          if(i%2){
-            let el = e[Math.floor(i/4)];
-            el.setAttribute('r',(r*.5)+'px');
-            el.setAttribute('stroke',`rgb(${r},${g},${b})`);
-          }
-        });
+        drawer[document.querySelector('#drawtype').value](r,g,b);
 
+        x += barWidth + 1;
       }
     }
-  };
+
+    var drawer={
+      bars: (r,g,b)=>{
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+      },
+      centered: (r,g,b)=>{
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.roundRect(x, (HEIGHT - barHeight)/2, barWidth, barHeight,30).fill();
+      },
+      circle: (r,g,b)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.lineWidth = 3;
+        ctxanvas.beginPath();
+        ctxanvas.arc(parseInt(WIDTH/2), parseInt(HEIGHT/2), barHeight, 0, 2 * Math.PI);
+        ctxanvas.stroke();
+      }
+    }
+
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      this.beginPath();
+      this.moveTo(x+r, y);
+      this.arcTo(x+w, y,   x+w, y+h, r);
+      this.arcTo(x+w, y+h, x,   y+h, r);
+      this.arcTo(x,   y+h, x,   y,   r);
+      this.arcTo(x,   y,   x+w, y,   r);
+      this.closePath();
+      return this;
+    }
 </script>
 </html>
