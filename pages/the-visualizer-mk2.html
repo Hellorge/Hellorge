@@ -4,25 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>The Visualizer MK02</title>
+  <title>The Visualizer | MK02</title>
   <style media="screen">
     body{
       background-color: #141418;
+      margin: 0;
     }
     .gradtext{
       color: transparent;
       background-image: linear-gradient(to right, red, blue, red);
       -webkit-background-clip: text;
       background-size: 200% 100%;
-      font-size: 3vw;
+      font-size: 7vw;
       height: 100vh;
       opacity: 0;
       display: grid;
+      font-family: cursive;
       place-content: center;
-      animation: show 1s linear 2s 1 forwards, flow 5s linear 0s infinite alternate;
+      animation: show 1s linear 0s 1 forwards, flow 5s linear 0s infinite alternate;
+      position: fixed;
+      top: 0%;
+      width: 100%;
+    }
+    #controls{
+      position: fixed;
+      bottom: 0%;
     }
     #canvas{
-      background-color: transparent;
     }
     .btnSources{
       color: #000;
@@ -68,9 +76,9 @@
       border-radius: var(--sr-bdrr,0);
     }
     @keyframes show {
-      50%{opacity:1;font-size: 3vw;height: 100vh;}
-      70%{opacity:1;font-size: 3vw;height: 100vh;}
-      to{opacity:1;font-size: 1em;height: 7em;}
+      50%{opacity:1;font-size: 7vw;height: 100vh;}
+      70%{opacity:1;font-size: 7vw;height: 100vh;}
+      to{opacity:1;font-size: 2em;height: 1em;}
     }
     @keyframes flow {
       from{background-position: 0% 0%;}
@@ -80,18 +88,19 @@
 </head>
 <body>
   <center class="gradtext">The Visualizer | MK02</center>
-  <br>
-  <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
-  <audio id="audio" controls></audio>
-  <label class="btnSources" id="microphone">From Microphone</label>
-  <select class="btnSources" id="drawtype">
-    <option value="bars">Bars</option>
-    <option value="centered">Bars Centered</option>
-    <option value="circle">Circles</option>
-  </select>
-  <!-- <label class="btnSources">Full Screen</label> -->
-  <br>
-  <br>
+  <section id="controls">
+    <!-- https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 -->
+    <form onsubmit="return false" class="btnSources" id="link" for="youtube">Link <input id="youtube" type="url" placeholder="it starts with https://" required><button id="urlbtn">play</button></form>
+    <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
+    <audio id="audio" controls></audio>
+    <label class="btnSources" id="microphone">From Microphone</label>
+    <select class="btnSources" id="drawtype">
+      <option value="bars">Bars</option>
+      <option value="centered">Bars Centered</option>
+      <option value="circle">Circles</option>
+    </select>
+    <label class="btnSources" onclick="fullscreener();">Full Screen</label>
+  </section>
   <canvas id="canvas"></canvas>
 </body>
 <script>
@@ -99,23 +108,48 @@
   var mic = document.querySelector('#microphone');
   var file = document.getElementById("thefile");
   var audio = document.getElementById("audio");
+  var urlbtn = document.querySelector('#urlbtn');
+  var canvas = document.getElementById("canvas");
+  var ctxanvas = canvas.getContext("2d");
+  var errored = false;
   var context = null;
   var srca = null;
   var srcm = null;
 
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  audio.onerror=(a,b)=>{
+    errored='Error Loading Audio Source';
+  }
+
+  urlbtn.onclick=()=>{
+    if(document.querySelector('form#link').checkValidity()){
+      loadAudio(document.querySelector('input#youtube').value);
+    } else {
+      document.querySelector('form#link').reportValidity()
+    }
+  }
+
   file.onchange = function(){
-    if(context==null)context = new AudioContext();
     var files = this.files;
+    loadAudio(URL.createObjectURL((files[0])));
+  };
+
+  function loadAudio(source){
+    if(context==null)context = new AudioContext();
     audio = document.getElementById("audio");
-    audio.src = URL.createObjectURL(files[0]);
+    audio.crossOrigin = "anonymous";
+    audio.src = source;
     audio.style.display='initial';
+
     audio.load();
     audio.play();
 
     if(!srca)srca = context.createMediaElementSource(audio);
     gotAudio(srca);
     if(window.closeStream)closeStream();
-  };
+  }
 
   mic.onclick = function(){
     if(context==null)context = new AudioContext();
@@ -151,32 +185,40 @@
 
       dataArray = new Uint8Array(bufferLength);
 
-      var canvas = document.getElementById("canvas");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctxanvas = canvas.getContext("2d");
-
       WIDTH = canvas.width;
       HEIGHT = canvas.height;
+
+      window.addEventListener('resize',()=>{
+        WIDTH = canvas.width = window.innerWidth;
+        HEIGHT = canvas.height = window.innerHeight;
+        barWidth = (WIDTH / bufferLength);
+      });
 
       barWidth = (WIDTH / bufferLength);
       barHeight=0;
       var x = 0;
 
+      errored=false;
       renderFrame();
     };
 
     function renderFrame() {
+      if(errored){
+        ctxanvas.textAlign = "center";
+        ctxanvas.font = "30px Arial";
+        ctxanvas.fillText(errored, WIDTH/2, HEIGHT/2);
+        return
+      };
       requestAnimationFrame(renderFrame);
 
       x = 0;
 
       analyser.getByteFrequencyData(dataArray);
 
-      ctxanvas.fillStyle = "#000";
-      ctxanvas.fillRect(0, 0, WIDTH, HEIGHT);
+      ctxanvas.clearRect(0, 0, WIDTH, HEIGHT);
 
       for (var i = 0; i < bufferLength; i++) {
+        console.log('drawing');
         barHeight = Math.max(5,dataArray[i]);
 
         var r = barHeight + (25 * (i/bufferLength));
@@ -202,7 +244,7 @@
         ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
         ctxanvas.lineWidth = 3;
         ctxanvas.beginPath();
-        ctxanvas.arc(parseInt(WIDTH/2), parseInt(HEIGHT/2), barHeight, 0, 2 * Math.PI);
+        ctxanvas.arc(parseInt(WIDTH/2), parseInt(HEIGHT/2), barHeight*1.5, 0, 2 * Math.PI);
         ctxanvas.stroke();
       }
     }
@@ -218,6 +260,17 @@
       this.arcTo(x,   y,   x+w, y,   r);
       this.closePath();
       return this;
+    }
+
+    function fullscreener(){
+      if(document.fullscreen){
+        document.exitFullscreen();
+      } else {
+        document.querySelector('#canvas').requestFullscreen();
+        WIDTH = canvas.width = window.innerWidth;
+        HEIGHT = canvas.height = window.innerHeight;
+        barWidth = (WIDTH / bufferLength);
+      }
     }
 </script>
 </html>
