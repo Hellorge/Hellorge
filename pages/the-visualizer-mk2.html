@@ -34,14 +34,13 @@
     }
     .btnSources{
       color: #000;
-      height: 35px;
-      line-height: 35px;
-      padding: 0 1em;
+      padding: 6px 15px;
       cursor: pointer;
       background-color: #f1f3f4;
       border-radius: 50px;
       vertical-align: middle;
       display: inline-block;
+      margin: 2px 0;
     }
     #thefile{
       display: none;
@@ -55,6 +54,7 @@
       height: 35px;
       vertical-align: middle;
       display: none;
+      max-width: 100vw;
     }
     viz{
       display: flex;
@@ -92,7 +92,6 @@
     <!-- https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 -->
     <form onsubmit="return false" class="btnSources" id="link" for="youtube">Link <input id="youtube" type="url" placeholder="it starts with https://" required><button id="urlbtn">play</button></form>
     <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
-    <audio id="audio" controls></audio>
     <label class="btnSources" id="microphone">From Microphone</label>
     <select class="btnSources" id="drawtype">
       <option value="bars">Bars</option>
@@ -100,6 +99,7 @@
       <option value="circle">Circles</option>
     </select>
     <label class="btnSources" onclick="fullscreener();">Full Screen</label>
+    <audio id="audio" controls></audio>
   </section>
   <canvas id="canvas"></canvas>
 </body>
@@ -218,7 +218,6 @@
       ctxanvas.clearRect(0, 0, WIDTH, HEIGHT);
 
       for (var i = 0; i < bufferLength; i++) {
-        console.log('drawing');
         barHeight = Math.max(5,dataArray[i]);
 
         var r = barHeight + (25 * (i/bufferLength));
