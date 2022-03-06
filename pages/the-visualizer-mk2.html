@@ -9,7 +9,7 @@
     body{
       background-color: #141418;
       margin: 0;
-      /* overflow: hidden; */
+      overflow: hidden;
     }
     .gradtext{
       color: transparent;
@@ -49,8 +49,6 @@
       display: none;
     }
     #audio{
-      /* transform: rotate3d(0, 0, 1, 270deg) translateY(13em); */
-      /* position: fixed; */
       right: 0%;
       top: 50%;
       width: 30em;
@@ -58,6 +56,7 @@
       vertical-align: middle;
       display: none;
       max-width: 100vw;
+      flex-shrink: 0;
     }
     viz{
       display: flex;
@@ -151,6 +150,7 @@
     audio.crossOrigin = "anonymous";
     audio.src = source;
     audio.style.display='initial';
+    audio.onended=stoprecording;
 
     audio.load();
     audio.play();
@@ -286,7 +286,7 @@
     }
 
     function record() {
-      var time = 0;
+      window.time = 0;
       var recordedChunks = [];
       return new Promise(function (res, rej) {
         var stream = canvas.captureStream(30 /*fps*/);
@@ -306,8 +306,7 @@
         mediaRecorder.onerror = function (er) {
           recorder.innerHTML='error!';
           recorder.onclick=record;
-          clearInterval(recordertime);
-          time=0;
+          stoprecording();
         }
 
         mediaRecorder.ondataavailable = function (event) {
@@ -320,12 +319,17 @@
             window.open(url);
             recorder.innerHTML='Record';
             recorder.onclick=record;
-            clearInterval(recordertime);
-            time=0;
+            stoprecording();
         }
 
         mediaRecorder.start();
       })
+
+    }
+
+    function stoprecording(){
+      clearInterval(recordertime);
+      time=0;
     }
 
 </script>
