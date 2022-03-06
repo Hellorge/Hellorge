@@ -12,14 +12,14 @@
       justify-content: space-around;
       flex-wrap: wrap;
     }
-    img{
-      width: 50%;
-      padding: 1%;
+    svg{
+      width: 48%;
+      margin: 1%;
       box-sizing: border-box;
     }
     @media screen and (max-width: 769px) {
-        img{
-          width: 100%;
+        svg{
+          width: 98%;
         }
     }
   </style>
@@ -28,7 +28,7 @@
   <?php
   $files = glob('../svg/*.{svg}', GLOB_BRACE);
   foreach($files as $file) {
-    echo '<img src="'.$file.'" alt="">';
+    echo file_get_contents($file);
   }
    ?>
 </body>
