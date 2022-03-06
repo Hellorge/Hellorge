@@ -9,6 +9,7 @@
     body{
       background-color: #141418;
       margin: 0;
+      /* overflow: hidden; */
     }
     .gradtext{
       color: transparent;
@@ -27,8 +28,9 @@
       width: 100%;
     }
     #controls{
-      position: fixed;
-      bottom: 0%;
+      display: flex;
+      overflow: auto;
+      align-items: center;
     }
     #canvas{
     }
@@ -40,7 +42,8 @@
       border-radius: 50px;
       vertical-align: middle;
       display: inline-block;
-      margin: 2px 0;
+      margin: 2px;
+      flex-shrink: 0;
     }
     #thefile{
       display: none;
@@ -88,8 +91,8 @@
 </head>
 <body>
   <center class="gradtext">The Visualizer | MK02</center>
+  <canvas id="canvas"></canvas>
   <section id="controls">
-    <!-- https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 -->
     <form onsubmit="return false" class="btnSources" id="link" for="youtube">Link <input id="youtube" type="url" placeholder="it starts with https://" required><button id="urlbtn">play</button></form>
     <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
     <label class="btnSources" id="microphone">From Microphone</label>
@@ -97,11 +100,12 @@
       <option value="bars">Bars</option>
       <option value="centered">Bars Centered</option>
       <option value="circle">Circles</option>
+      <option value="cursed">cursed</option>
     </select>
     <label class="btnSources" onclick="fullscreener();">Full Screen</label>
+    <label id="recorder" class="btnSources">Record</label>
     <audio id="audio" controls></audio>
   </section>
-  <canvas id="canvas"></canvas>
 </body>
 <script>
 
@@ -110,6 +114,7 @@
   var audio = document.getElementById("audio");
   var urlbtn = document.querySelector('#urlbtn');
   var canvas = document.getElementById("canvas");
+  var recorder = document.querySelector('#recorder');
   var ctxanvas = canvas.getContext("2d");
   var errored = false;
   var context = null;
@@ -117,7 +122,9 @@
   var srcm = null;
 
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.height = window.innerHeight - 45;
+
+  recorder.onclick=record;
 
   audio.onerror=(a,b)=>{
     errored='Error Loading Audio Source';
@@ -131,12 +138,14 @@
     }
   }
 
-  file.onchange = function(){
+  file.oninput = function(){
     var files = this.files;
-    loadAudio(URL.createObjectURL((files[0])));
+    var url = URL.createObjectURL((files[0]));
+    loadAudio(url);
   };
 
   function loadAudio(source){
+    file.value='';
     if(context==null)context = new AudioContext();
     audio = document.getElementById("audio");
     audio.crossOrigin = "anonymous";
@@ -190,7 +199,7 @@
 
       window.addEventListener('resize',()=>{
         WIDTH = canvas.width = window.innerWidth;
-        HEIGHT = canvas.height = window.innerHeight;
+        HEIGHT = canvas.height = window.innerHeight - 45;
         barWidth = (WIDTH / bufferLength);
       });
 
@@ -204,8 +213,9 @@
 
     function renderFrame() {
       if(errored){
+        ctxanvas.fillStyle = "rgb(255,0,0)";
         ctxanvas.textAlign = "center";
-        ctxanvas.font = "30px Arial";
+        ctxanvas.font = (window.innerWidth/20)+"px Arial";
         ctxanvas.fillText(errored, WIDTH/2, HEIGHT/2);
         return
       };
@@ -224,7 +234,7 @@
         var g = 250 * (i/bufferLength);
         var b = 50;
 
-        drawer[document.querySelector('#drawtype').value](r,g,b);
+        drawer[document.querySelector('#drawtype').value](r,g,b,i);
 
         x += barWidth + 1;
       }
@@ -245,6 +255,9 @@
         ctxanvas.beginPath();
         ctxanvas.arc(parseInt(WIDTH/2), parseInt(HEIGHT/2), barHeight*1.5, 0, 2 * Math.PI);
         ctxanvas.stroke();
+      },
+      cursed: (r,g,b,i)=>{
+
       }
     }
 
@@ -267,9 +280,53 @@
       } else {
         document.querySelector('#canvas').requestFullscreen();
         WIDTH = canvas.width = window.innerWidth;
-        HEIGHT = canvas.height = window.innerHeight;
+        HEIGHT = canvas.height = window.innerHeight - 45;
         barWidth = (WIDTH / bufferLength);
       }
     }
+
+    function record() {
+      var time = 0;
+      var recordedChunks = [];
+      return new Promise(function (res, rej) {
+        var stream = canvas.captureStream(30 /*fps*/);
+        mediaRecorder = new MediaRecorder(stream, {
+            mimeType: "video/webm; codecs=vp9"
+        });
+
+        mediaRecorder.onstart = function (event) {
+          recorder.innerHTML='Stop';
+          recorder.onclick=()=>{mediaRecorder.stop()};
+          window.recordertime=setInterval(()=>{
+            time++;
+            recorder.innerHTML=`${parseInt(time/60)}:${time%60} stop`;
+          },1000);
+        }
+
+        mediaRecorder.onerror = function (er) {
+          recorder.innerHTML='error!';
+          recorder.onclick=record;
+          clearInterval(recordertime);
+          time=0;
+        }
+
+        mediaRecorder.ondataavailable = function (event) {
+            recordedChunks.push(event.data);
+        }
+
+        mediaRecorder.onstop = function (event) {
+            var blob = new Blob(recordedChunks, {type: "video/webm" });
+            var url = URL.createObjectURL(blob);
+            window.open(url);
+            recorder.innerHTML='Record';
+            recorder.onclick=record;
+            clearInterval(recordertime);
+            time=0;
+        }
+
+        mediaRecorder.start();
+      })
+    }
+
 </script>
 </html>
