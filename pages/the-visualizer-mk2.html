@@ -284,7 +284,7 @@
         ctxanvas.lineWidth=2;
         let dist = 15*i;
         if(i==0){ctxanvas.translate(WIDTH/2,HEIGHT/2);}
-        ctxanvas.strokeRect(-dist/2,-dist/2, dist, dist);
+        ctxanvas.roundRect(-dist/2,-dist/2, dist, dist,20).stroke();
         ctxanvas.rotate((Math.PI*.0003)*rawHeight);
         if(i==bufferLength-1){ctxanvas.resetTransform();}
       }
