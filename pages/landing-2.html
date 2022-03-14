@@ -153,7 +153,7 @@ setTimeout(()=>{
 },4000)
 
 function preventDefault(e){
-  let Y = e.deltaY||(window.qYp - e.touches[0].pageY);
+  let Y = e.deltaY??(window.qYp - e.touches[0].pageY);
   let koef = parallaxY+document.body.scrollTop+Math.min(Y,0)>=100;
 
   if(!Y||koef)return;
@@ -235,8 +235,6 @@ if (this.y > h) this.border();
 bx.prototype.draw = function() {
 ctx.beginPath();
 ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation+(Math.PI*2));
-ctx.lineTo(this.x, this.y);
-ctx.closePath();
 ctx.globalAlpha = this.opacity;
 ctx.fillStyle = this.color;
 ctx.fill();

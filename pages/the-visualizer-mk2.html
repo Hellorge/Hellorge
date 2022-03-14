@@ -100,6 +100,7 @@
       <option value="centered">Bars Centered</option>
       <option value="circle">Circles</option>
       <option value="cursed">cursed</option>
+      <option value="testing">testing</option>
     </select>
     <label class="btnSources" onclick="fullscreener();">Full Screen</label>
     <label id="recorder" class="btnSources">Record</label>
@@ -115,6 +116,7 @@
   var canvas = document.getElementById("canvas");
   var recorder = document.querySelector('#recorder');
   var ctxanvas = canvas.getContext("2d");
+  var recordertime = null;
   var errored = false;
   var context = null;
   var srca = null;
@@ -122,6 +124,7 @@
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 45;
+  ctxanvas.save();
 
   recorder.onclick=record;
 
@@ -228,6 +231,7 @@
       ctxanvas.clearRect(0, 0, WIDTH, HEIGHT);
 
       for (var i = 0; i < bufferLength; i++) {
+        rawHeight = dataArray[i];
         barHeight = Math.max(5,dataArray[i]);
 
         var r = barHeight + (25 * (i/bufferLength));
@@ -257,9 +261,36 @@
         ctxanvas.stroke();
       },
       cursed: (r,g,b,i)=>{
-
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.roundRect(WIDTH/2, (HEIGHT + barHeight+(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2 - barHeight, (HEIGHT + barHeight+(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2, (HEIGHT - barHeight-(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2 - barHeight, (HEIGHT - barHeight-(i*2))/2, barHeight, 20,30).fill();
+      },
+      spiral: (r,g,b,i)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.beginPath();
+        ctxanvas.lineWidth=3;
+        if(i==0){ctxanvas.translate(WIDTH/2+(parseInt(window.innerWidth*.085)),HEIGHT/2);}
+        ctxanvas.moveTo(0,0);
+        ctxanvas.lineTo(barHeight,0);
+        ctxanvas.rotate(((Math.PI*2)/bufferLength));
+        ctxanvas.stroke();
+        ctxanvas.translate(0,parseInt(window.innerWidth*.005));
+        if(i==bufferLength-1){ctxanvas.resetTransform();}
+      },
+      boxed: (r,g,b,i)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.lineWidth=2;
+        let dist = 15*i;
+        if(i==0){ctxanvas.translate(WIDTH/2,HEIGHT/2);}
+        ctxanvas.strokeRect(-dist/2,-dist/2, dist, dist);
+        ctxanvas.rotate((Math.PI*.0003)*rawHeight);
+        if(i==bufferLength-1){ctxanvas.resetTransform();}
       }
     }
+
+    document.querySelector('#drawtype').innerHTML=Object.keys(drawer).map(e=>`<option value="${e}">${e}</option>`);
 
     CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
       if (w < 2 * r) r = w / 2;
@@ -297,7 +328,7 @@
         mediaRecorder.onstart = function (event) {
           recorder.innerHTML='Stop';
           recorder.onclick=()=>{mediaRecorder.stop()};
-          window.recordertime=setInterval(()=>{
+          recordertime=setInterval(()=>{
             time++;
             recorder.innerHTML=`${parseInt(time/60)}:${time%60} stop`;
           },1000);
