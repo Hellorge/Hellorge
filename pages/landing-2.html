@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" type="image/ico" href="/images/fav.ico">
   <title>HELLORGE</title>
   <style media="screen">
     html,body{
@@ -202,6 +203,8 @@ this.color = colours[Math.floor(colours.length * Math.random())];
 var size = Math.random()*(h/5);
 this.size = size < 15 ? 15 : size;
 
+this.letter = 'HELLORGE'.split('')[parseInt(Math.random()*8)]
+
 this.speed = this.size/70;
 
 this.opacity = Math.random();
@@ -234,7 +237,10 @@ if (this.y > h) this.border();
 
 bx.prototype.draw = function() {
 ctx.beginPath();
-ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation+(Math.PI*2));
+// ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation+(Math.PI*2));
+ctx.font=this.size+'px serif';
+ctx.rotate(Math.PI*.1);
+ctx.fillText(this.letter,this.x, this.y);
 ctx.globalAlpha = this.opacity;
 ctx.fillStyle = this.color;
 ctx.fill();
