@@ -125,7 +125,6 @@
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 45;
-  ctxanvas.save();
 
   recorder.onclick=record;
 
@@ -189,15 +188,14 @@
     function gotAudio(src) {
       analyser = context.createAnalyser();
       src.connect(analyser);
+
       if(src.mediaElement){
         analyser.connect(context.destination);
         audio.play();
       }
 
       analyser.fftSize = 256;
-
       bufferLength=analyser.frequencyBinCount;
-
       dataArray = new Uint8Array(bufferLength);
 
       WIDTH = canvas.width;
@@ -273,13 +271,13 @@
       spiral: (r,g,b,i)=>{
         ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
         ctxanvas.beginPath();
-        ctxanvas.lineWidth=3;
-        if(i==0){ctxanvas.translate(WIDTH/2+(parseInt(window.innerWidth*.085)),HEIGHT/2);}
+        ctxanvas.lineWidth=5;
+        if(i==0){ctxanvas.translate(WIDTH/2,HEIGHT/2);}
         ctxanvas.moveTo(0,0);
-        ctxanvas.lineTo(barHeight,0);
-        ctxanvas.rotate(((Math.PI*2)/bufferLength));
+        ctxanvas.lineTo(rawHeight,0);
+        ctxanvas.rotate(((Math.PI*5)/bufferLength));
         ctxanvas.stroke();
-        ctxanvas.translate(0,parseInt(window.innerWidth*.005));
+        ctxanvas.translate(parseInt(rawHeight*.001),0);
         if(i==bufferLength-1){ctxanvas.resetTransform();}
       },
       boxed: (r,g,b,i)=>{

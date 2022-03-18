@@ -233,17 +233,20 @@ if (this.y <= h) {
 }
 
 if (this.y > h) this.border();
-};
+};  console.log(this.shiftDirection*this.speed/100);
+
 
 bx.prototype.draw = function() {
 ctx.beginPath();
 // ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation+(Math.PI*2));
 ctx.font=this.size+'px serif';
-ctx.rotate(Math.PI*.1);
+ctx.rotate(Math.PI*this.rotation/20);
+this.rotation+=0.0001;
 ctx.fillText(this.letter,this.x, this.y);
 ctx.globalAlpha = this.opacity;
 ctx.fillStyle = this.color;
 ctx.fill();
+ctx.resetTransform();
 };
 
 const ctx = canvasEl.getContext('2d');
