@@ -37,13 +37,21 @@
       --el-opct: 0;
       --el-opct2: 1;
   }
+  infy[snr]{
+      --el-trnsZ: -15vw;
+      --sundeg: 50;
+      --el-linfy: -10%;
+      --el-rinfy: calc(110% - var(--el-width));
+      --el-linfy1: 7%;
+      --el-rinfy1: calc(93% - var(--el-width));
+  }
   inf-bx{
       display: block;
       transform-style: preserve-3d;
       height: var(--el-height);
   }
   inf-dv{
-      transform: translate3d(0, 0, calc(var(--el-axiZ)*var(--el-trnsZ)));
+      transform: translate3d(0, 0, calc(var(--el-axiZ)*var(--el-trnsZ))) rotateY( calc( var(--rsundeg,var(--sundeg,0)) * 1deg ) );
       background-color: #0155ff;
       color: #fff;
       border-radius: 30px;
@@ -64,9 +72,11 @@
       transform: translate3d(0, 0, 0);
       box-shadow: 0 5px 30px -5px #000;
       opacity: 1;
+      z-index: 100;
   }
   inf-dv.r-inf{
       left: var(--el-rinfy);
+      --rsundeg: calc( var(--sundeg) * -1 );
   }
   inf-dv{
       --el-axiZ: 5;
@@ -83,6 +93,12 @@
   inf-dv[role="1"]{
       --el-axiZ: 1;
       opacity: var(--el-opct2);
+  }
+  [snr] inf-dv.r-inf[role="1"]{
+    left: var(--el-rinfy1);
+  }
+  [snr] inf-dv.l-inf[role="1"]{
+    left: var(--el-linfy1);
   }
   .infy-cont{
       position: absolute;
@@ -146,6 +162,25 @@
   <br>
   <br>
   <infy bnr>
+    <inf-bx aria-label="true" aria-live="">
+      <inf-dv class="l-inf" role="4"><span class="infy-cont">0</span></inf-dv>
+      <inf-dv class="l-inf" role="3"><span class="infy-cont">1</span></inf-dv>
+      <inf-dv class="l-inf" role="2"><span class="infy-cont">2</span></inf-dv>
+      <inf-dv class="l-inf" role="1"><span class="infy-cont">3</span></inf-dv>
+      <inf-dv class="c-inf" role="0"><span class="infy-cont">4</span></inf-dv>
+      <inf-dv class="r-inf" role="1"><span class="infy-cont">5</span></inf-dv>
+      <inf-dv class="r-inf" role="2"><span class="infy-cont">6</span></inf-dv>
+      <inf-dv class="r-inf" role="3"><span class="infy-cont">7</span></inf-dv>
+      <inf-dv class="r-inf" role="4"><span class="infy-cont">8</span></inf-dv>
+    </inf-bx>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'r-inf','l-inf')" class="inf-ar lf"><svg class="ion" viewBox="0 0 512 512"><path d="M328 112L184 256l144 144"/></svg></button>
+    <button onclick="infy_next(this.parentElement.querySelector('inf-bx'),'l-inf','r-inf')" class="inf-ar rt"><svg class="ion" viewBox="0 0 512 512"><path d="M184 112l144 144-144 144"/></svg></button>
+  </infy>
+  <br>
+  <br>
+  <br>
+  <br>
+  <infy snr>
     <inf-bx aria-label="true" aria-live="">
       <inf-dv class="l-inf" role="4"><span class="infy-cont">0</span></inf-dv>
       <inf-dv class="l-inf" role="3"><span class="infy-cont">1</span></inf-dv>
