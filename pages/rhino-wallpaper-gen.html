@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Rolling Rhino Remix is cool</title>
+  <script src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+  <style media="screen">
+    body{
+      margin: 0;
+      overflow: hidden;
+      background-color: #05090c;
+      color: #fff;
+      font-family: monospace;
+    }
+    input,select,textarea,button{
+      border-radius: 7px;
+      padding: 5px;
+      background-color: #ffffff6e;
+      color: #181818;
+      font: inherit;
+      border: 2px solid #ddddcc;
+    }
+    input[type=color]{
+      padding: 0;
+    }
+    controls{
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    controls>*{
+      position: absolute;
+      background-color: #ffffff21;
+      backdrop-filter: blur(1px);
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 0 0 13px -5px #000;
+    }
+    controls>right{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1em;
+      right: 1em;
+      top: 1em;
+    }
+    sketch{
+      height: 100vh;
+      width: 100vw;
+      display: block;
+      padding: 10px;
+      background: linear-gradient(90deg, #1f005c, #5b0060, #870160, #ac255e, #ca485c, #e16b5c, #f39060, #ffb56b);
+    }
+    box{
+      padding: 5px;
+      background-color: #00000020;
+      border-radius: 5px;
+    }
+    box input{
+      width: 100%;
+    }
+    box>*{
+      display: none;
+    }
+    box[class=""]>solid,
+    box[class="solid"]>solid,
+    box[class="linear"]>linear,
+    box[class="radial"]>radial,
+    box[class="conic"]>conic{
+      display: initial
+    }
+  </style>
+</head>
+<body>
+  <sketch>
+      hello!!!!
+  </sketch>
+  <controls>
+    <left></left>
+    <mid></mid>
+    <right>
+      <select name="background" id="bgmode" onchange="bgchange()">
+        <option value="solid">Solid Color</option>
+        <option value="linear">Linear Gradient</option>
+        <option value="radial">Radial Gradient</option>
+        <option value="conic">Conic Gradient</option>
+      </select>
+      <box>
+        <solid>
+          <label for="clr1">Color 1</label>
+          <input type="color" class="bbchg"  id="clr1" value="#f5da55">
+        </solid>
+        <linear>
+          <input type="color" class="bbchg"  id="clr2" value="#f5da55">
+        </linear>
+      </box>
+      <button type="button" class="btnScreenShot" onclick="onScreenShotClick()" id="btnScreenShot">Get Image</button>
+    </right>
+  </controls>
+</body>
+<script type="text/javascript">
+  const box=document.querySelector('box');
+  const sketch=document.querySelector('sketch');
+
+  document.querySelectorAll('.bbchg').forEach(e=>{
+    e.onchange=bgchange;
+    e.oninput=bgchange;
+  });
+
+
+  function bgchange(){
+    let v=document.querySelector('#bgmode').value;
+    document.querySelector('box').classList=v;
+
+    switch (v) {
+      case 'solid':
+        sketch.style.background=document.querySelector('#clr1').value;
+        break;
+      case 'linear':
+        sketch.style.background=document.querySelector('#clr1').value;
+        break;
+      case 'radial':
+        sketch.style.background=document.querySelector('#clr1').value;
+        break;
+      case 'conic':
+        sketch.style.background=document.querySelector('#clr1').value;
+        break;
+      default:
+        sketch.style.background=document.querySelector('#clr1').value;
+    }
+  }
+
+  function onScreenShotClick(ev){
+    html2canvas(sketch).then(canvas => {
+      var a = document.createElement('a');
+      a.download = 'RollingRhinoRemixIsCool.png';
+      a.href = canvas.toDataURL();
+      a.click();
+    });
+  }
+</script>
+</html>
