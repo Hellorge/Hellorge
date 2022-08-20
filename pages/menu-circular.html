@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style media="screen">
+    :root {
+      --icon-size: 30px;
+      --menu-size: 4em;
+      --anim-time: .5s;
+      --bg-color: #121212;
+      --fg-color: #ffffff;
+      --ring-border: 20px;
+    }
+
+    body {
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 96vh;
+    }
+
+    circular-menu {
+      position: relative;
+      display: inline-block;
+      color: var(--fg-color);
+    }
+
+    switch-icon {
+      display: block;
+      height: var(--icon-size);
+      width: var(--icon-size);
+      border-radius: 100%;
+      padding: 5px;
+      cursor: pointer;
+      transition: var(--anim-time);
+    }
+
+    #switch-input:checked + circular-switch switch-icon{
+      transform: rotateZ(225deg);
+      background-color: transparent;
+      color: var(--bg-color);
+    }
+    menu-box {
+      display: inline-block;
+      background-color: transparent;
+      border-radius: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      height: 0;
+      width: 0;
+      transition: var(--anim-time);
+      border: var(--icon-size) solid var(--bg-color);
+      box-shadow: 0 0 13px -5px #000, inset 0 0 13px -5px #000;
+    }
+
+    #switch-input:checked ~ menu-box {
+      padding: var(--menu-size);
+      border-width: calc(var(--icon-size) + var(--ring-border));
+    }
+
+    menu-box label {
+      opacity: 0;
+      position: absolute;
+      right: calc(100% + var(--ring-border) / 2);
+      top: 50%;
+      transition: calc( var(--anim-time) / 2);
+    }
+
+    #switch-input:checked ~ menu-box label {
+      opacity: 1;
+      transition: calc( var(--anim-time) / 2);
+    }
+
+    menu-box svg {
+      height: var(--icon-size);
+      width: var(--icon-size);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <circular-menu>
+    <input type="checkbox" id="switch-input" class="hidden">
+    <circular-switch>
+      <label for="switch-input">
+        <switch-icon>
+          <svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>
+        </switch-icon>
+      </label>
+    </circular-switch>
+    <menu-box>
+      <label title="Basket" for="menu-op1">
+        <input type="radio" id="menu-op1" class="hidden">
+        <svg viewBox="0 0 512 512"><path d="M68.4 192A20.38 20.38 0 0048 212.2a17.87 17.87 0 00.8 5.5L100.5 400a40.46 40.46 0 0039.1 29.5h232.8a40.88 40.88 0 0039.3-29.5l51.7-182.3.6-5.5a20.38 20.38 0 00-20.4-20.2H68.4zm193.32 160.07A42.07 42.07 0 11304 310a42.27 42.27 0 01-42.28 42.07z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32" d="M160 192l96-128 96 128"/></svg>
+      </label>
+    </menu-box>
+  </circular-menu>
+</body>
+<script type="text/javascript">
+  class circularMenu {
+    constructor() {
+      let root = document.createElement('circular-menu');
+
+    }
+  }
+</script>
+</html>
