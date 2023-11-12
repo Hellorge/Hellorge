@@ -1,1 +1,1 @@
-{{ site.pages }}
+{{ site.html_files }}
