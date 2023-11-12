@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Particle Flow Collision</title>
+    <style>
+        body {
+            background-color: #1e1d1b;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+</body>
+<script type="text/javascript">
+    class Vector {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+
+      add(vector) {
+        return new Vector(this.x + vector.x, this.y + vector.y);
+      }
+
+      subtract(vector) {
+        return new Vector(this.x - vector.x, this.y - vector.y);
+      }
+
+      multiply(scalar) {
+        return new Vector(this.x * scalar, this.y * scalar);
+      }
+
+      dotProduct(vector) {
+        return this.x * vector.x + this.y * vector.y;
+      }
+
+      get magnitude() {
+        return Math.sqrt(this.x ** 2 + this.y ** 2);
+      }
+
+      get direction() {
+        return Math.atan2(this.x, this.y);
+      }
+    }
+
+    const collisionVector = (particle1, particle2) => {
+        let dpos = particle1.position.subtract(particle2.position);
+        let dvel = particle1.velocity.subtract(particle2.velocity);
+      return particle1.velocity
+        .subtract(dpos.multiply(dvel.dotProduct(dpos) / dpos.magnitude**2)
+          // add mass to the system
+          .multiply((2 * particle2.sphereArea) / (particle1.sphereArea + particle2.sphereArea))
+        );
+    };
+
+    class Particle {
+        x = 0
+        y = 0
+        vx = 1
+        vy = 1
+        ax = 0
+        ay = 0
+        rad = 5
+        clr = "red"
+        constructor(opts={}, id, stage) {
+            Object.assign(this, opts);
+
+            this.id = id;
+            this.stage = stage;
+            this.sphereArea = 4 * Math.PI * this.rad ** 2;
+
+            this.limX = this.stage.canvas.width;
+            this.limY = this.stage.canvas.height;
+
+            if (this.x == 0)
+                this.x = this.limX/2 + (this.vx*this.rad**2);
+            else
+                this.x = this.x ?? this.rnd_x;
+            
+            if (this.y == 0)
+                this.y = this.limY/2 + (this.vy*this.rad**2);
+            else
+                this.y = this.y ?? this.rnd_y;
+            this.vx = this.vx || 0;
+            this.vy = this.vy || 0;
+        }
+        next() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            this.vx *= (1 + this.ax / 100);
+            this.vy *= (1 + this.ay / 100);
+
+            if (this.stage.finite && (this.x + this.rad >= this.limX || this.x - this.rad <= 0)) {
+                this.vx *= -1;
+            } else {
+                if (this.x - this.rad > this.limX && this.vx >= 0) {
+                    this.x = 0 - this.rad;
+                } else if (this.x + this.rad < 0 && this.vx < 0) {
+                    this.x = this.limX + this.rad;
+                }
+            }
+
+
+            if (this.stage.finite && (this.y + this.rad >= this.limY || this.y - this.rad <= 0)) {
+                this.vy *= -1;
+            } else if (!this.stage.finite) {
+                if (this.y - this.rad > this.limY && this.vy >= 0) {
+                    this.y = 0 - this.rad;
+                } else if (this.y + this.rad < 0 && this.vy < 0) {
+                    this.y = this.limY + this.rad;
+                }
+            }
+
+            return this
+        }
+        draw() {
+
+            if (this.stage.bounce) {
+                this.stage.particles.forEach((_p,_i) => {
+                    let D = this.position.subtract(_p.position).magnitude;
+                    let R = this.rad + _p.rad;
+
+                    if (D <= R && this.id != _p.id) {
+                        let v1 = collisionVector(this, _p);
+                        let v2 = collisionVector(_p, this);
+
+                        this.vx =  v1.x;
+                        this.vy =  v1.y;
+                        _p.vx =  v2.x;
+                        _p.vy =  v2.y;
+                    }
+                });
+            }
+
+            this.stage.ctx.fillStyle = this.clr || "#ffffff";
+            this.stage.ctx.beginPath();
+            this.stage.ctx.arc(this.x, this.y, this.rad, 0, 180);
+            this.stage.ctx.fill();
+        }
+        get rnd_x() {
+            return Math.ceil(Math.random() * this.limX);
+        }
+        get rnd_y() {
+            return Math.ceil(Math.random() * this.limY);
+        }
+        get position() {
+            return new Vector(this.x+this.vx, this.y+this.vy)
+        }
+        get velocity() {
+            return new Vector(this.vx, this.vy)
+        }
+    }
+
+    class Stage {
+        bounce = false
+        finite = true
+        particle_count = 100
+        particles = []
+        constructor(opts={}) {
+            Object.assign(this, opts);
+            this.init();
+        }
+        init() {
+            this.particles = [];
+            this.ctx = this.canvas.getContext('2d');
+
+            for (let i = 0; i < this.particle_count; i++)
+                this.particles.push(new Particle(this.particle_opts, i, this));
+
+            this.particles.push(new Particle({
+                x: 0,
+                y: 0,
+                vx: 0,
+                vy: 0,
+                ax: 0,
+                ay: 0,
+                rad: 20,
+                clr: "#fff"
+            }, 500, this));
+        }
+        render() {
+            this.ctx.globalAlpha = .2;
+            this.ctx.fillStyle = '#111111';
+            this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+            this.ctx.globalAlpha = 1;
+
+            this.particles.forEach(p => {
+                p.next().draw();
+            });
+
+            requestAnimationFrame(this.render.bind(this));
+        }
+    }
+
+    const canvas = document.querySelector('canvas');
+    canvas.width = innerWidth*.98;
+    canvas.height = innerHeight*.98;
+
+    const stage = new Stage({
+        "canvas": canvas,
+        "bounce": 1,
+        "finite": true,
+        "particle_count": 1000,
+        "particle_opts": {
+            x: null,
+            y: null,
+            vx: 1.5,
+            vy: 1.5,
+            ax: 0,
+            ay: 0,
+            get rad() {
+                return Math.random()*5+1
+            },
+            get clr() {
+                const colors = ["#e10869", "#30ad6f", "#f4782c", "#f7ed9c", "#0e94b2"];
+                return colors[Math.floor(Math.random()*colors.length)]
+            }
+        }
+    });
+
+    stage.render();
+</script>
+</html>

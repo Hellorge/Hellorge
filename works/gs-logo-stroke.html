@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/ico" href="/images/fav.ico">
+    <title>Document</title>
+    <style type="text/css">
+    	body {
+    		background: #fefff4;
+    	}
+    	.mandala-svg-container {
+    		position: absolute;
+    		top: 50%;
+    		left: 50%;
+    		translate: -50% -50%;
+		}
+		svg {
+		    fill: none;
+		    stroke: #30ad6f;
+		    stroke-width: 1px;
+		    filter: drop-shadow(2px 4px 4px black);
+		}
+		#circle {
+			animation: circle 2s linear 0s 1 alternate;
+/*		    stroke-dashoffset: 910;*/
+		}
+		@keyframes circle {
+			from {stroke-dasharray: 0;}
+			to {stroke-dasharray: 910;}
+		}
+    </style>
+</head>
+<body>
+	<div class="mandala-svg-container">
+		<svg fill="none" width="500" height="500" viewBox="0 0 500 500">
+		  <path id="circle" d="m 397.24491,247.22397 c 0,88.36562 -71.63444,159.99993 -160,159.99993 -88.36556,0 -160,-71.63431 -160,-159.99993 0,-88.36562 71.63444,-159.99993 160,-159.99993 54.86714,0 103.28393,27.61721 132.1076,69.70893"/>
+		  <path id="arrow" d="M 399.59393,128.00406 256.38519,265.66605 210.33404,222.54104 100.28889,330.95697"/>
+		  <path id="point" d="m 395.37308,122.83848 10.72898,-1.30416 -1.35618,10.73976 z"/>
+		</svg>
+	</div>
+</body>
+</html>
