@@ -1,6 +1,3 @@
-layout: page
-title: "Hellorge's"
-
 <?php
 $dir = "pages/";
 $a = scandir($dir);
