@@ -5,93 +5,364 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" type="image/ico" href="/images/fav.ico">
-  <title>The Visualizer MK01</title>
+  <title>The Visualizer | MK02</title>
+  <style media="screen">
+    body{
+      background-color: #141418;
+      margin: 0;
+      overflow: hidden;
+    }
+    .gradtext{
+      color: transparent;
+      background-image: linear-gradient(to right, red, blue, red);
+      -webkit-background-clip: text;
+      background-size: 200% 100%;
+      font-size: 7vw;
+      height: 100vh;
+      opacity: 0;
+      display: grid;
+      font-family: cursive;
+      place-content: center;
+      animation: show 1s linear 0s 1 forwards, flow 5s linear 0s infinite alternate;
+      position: fixed;
+      top: 0%;
+      width: 100%;
+    }
+    #controls{
+      display: flex;
+      overflow: auto;
+      align-items: center;
+    }
+    #canvas{
+    }
+    .btnSources{
+      color: #000;
+      padding: 6px 15px;
+      cursor: pointer;
+      background-color: #f1f3f4;
+      border-radius: 50px;
+      vertical-align: middle;
+      display: inline-block;
+      margin: 2px;
+      flex-shrink: 0;
+    }
+    #thefile{
+      display: none;
+    }
+    #audio{
+      right: 0%;
+      top: 50%;
+      width: 30em;
+      height: 35px;
+      vertical-align: middle;
+      display: none;
+      max-width: 100vw;
+      flex-shrink: 0;
+    }
+    viz{
+      display: flex;
+      height: 300px;
+      align-items: var(--el-algn,flex-end);
+    }
+    viz[c]{
+      --el-algn: center;
+      --sr-bdrr: 40px;
+      --sr-wdth: 5px;
+      --sr-marg: 4px;
+    }
+    viz>sr{
+      flex-shrink: 0;
+      background-color: #fff;
+      height: 2em;
+      width: var(--sr-wdth,15px);
+      margin: 0 var(--sr-marg,1px);
+      border-radius: var(--sr-bdrr,0);
+    }
+    @keyframes show {
+      50%{opacity:1;font-size: 7vw;height: 100vh;}
+      70%{opacity:1;font-size: 7vw;height: 100vh;}
+      to{opacity:1;font-size: 2em;height: 1em;}
+    }
+    @keyframes flow {
+      from{background-position: 0% 0%;}
+      to{background-position: 200% 0%;}
+    }
+  </style>
 </head>
 <body>
-  <center><pre><h1>The Visualizer | MK01</h1></pre></center>
-  <br>
-  <div id="content">
-    <input type="file" id="thefile" accept="audio/*" />
-    <canvas id="canvas"></canvas>
+  <center class="gradtext">The Visualizer | MK02</center>
+  <canvas id="canvas"></canvas>
+  <section id="controls">
+    <form onsubmit="return false" class="btnSources" id="link" for="youtube">Link <input id="youtube" type="url" placeholder="it starts with https://" required><button id="urlbtn">play</button></form>
+    <label class="btnSources" id="file" for="thefile">Choose File<input id="thefile" type="file" name="" accept="audio/* ,video/*"></label>
+    <label class="btnSources" id="microphone">From Microphone</label>
+    <select class="btnSources" id="drawtype">
+      <option value="bars">Bars</option>
+      <option value="centered">Bars Centered</option>
+      <option value="circle">Circles</option>
+      <option value="cursed">cursed</option>
+      <option value="testing">testing</option>
+    </select>
+    <label class="btnSources" onclick="fullscreener();">Full Screen</label>
+    <label id="recorder" class="btnSources">Record</label>
     <audio id="audio" controls></audio>
-    <br>
-    <span>base latency: <span id="baseLatency"></span></span>
-    <br>
-    <span>current time: <span id="currentTime"></span></span>
-    <br>
-    <span>buffer length: <span id="bufferLength"></span></span>
-  </div>
+  </section>
 </body>
 <script>
-window.onload = function() {
 
+  var mic = document.querySelector('#microphone');
   var file = document.getElementById("thefile");
   var audio = document.getElementById("audio");
-  let baseLatencyEl=document.querySelector('#baseLatency'),
-      bufferLengthEl=document.querySelector('#bufferLength'),
-      currentTimeEl=document.querySelector('#currentTime');
+  var urlbtn = document.querySelector('#urlbtn');
+  var canvas = document.getElementById("canvas");
+  var recorder = document.querySelector('#recorder');
+  var ctxanvas = canvas.getContext("2d");
+  var recordertime = null;
+  var errored = false;
+  var context = null;
+  var srca = null;
+  var srcm = null;
 
-  file.onchange = function() {
-    var files = this.files;
-    audio.src = URL.createObjectURL(files[0]);
-    audio.load();
-    audio.play();
-    context = new AudioContext();
-    var src = context.createMediaElementSource(audio);
-    analyser = context.createAnalyser();
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 45;
 
-    src.connect(analyser);
-    analyser.connect(context.destination);
+  recorder.onclick=record;
 
-    analyser.fftSize = 256;
+  audio.onerror=(a,b)=>{
+    errored='Error Loading Audio Source';
+  }
 
-    var canvas = document.getElementById("canvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx = canvas.getContext("2d");
-
-
-    bufferLength=analyser.frequencyBinCount;
-    bufferLengthEl.innerHTML=bufferLength;
-
-    dataArray = new Uint8Array(bufferLength);
-
-    WIDTH = canvas.width;
-    HEIGHT = canvas.height;
-
-    barWidth = (WIDTH / bufferLength) * 2.5;
-    barHeight=0;
-    var x = 0;
-
-    audio.play();
-    renderFrame();
-  };
-  function renderFrame() {
-    requestAnimationFrame(renderFrame);
-
-    x = 0;
-
-    analyser.getByteFrequencyData(dataArray);
-
-    baseLatencyEl.innerHTML=context.baseLatency;
-    currentTimeEl.innerHTML=context.currentTime;
-
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    for (var i = 0; i < bufferLength; i++) {
-      barHeight = dataArray[i];
-
-      var r = barHeight + (25 * (i/bufferLength));
-      var g = 250 * (i/bufferLength);
-      var b = 50;
-
-      ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-      ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-
-      x += barWidth + 1;
+  urlbtn.onclick=()=>{
+    if(document.querySelector('form#link').checkValidity()){
+      loadAudio(document.querySelector('input#youtube').value);
+    } else {
+      document.querySelector('form#link').reportValidity()
     }
   }
-};
+
+  file.oninput = function(){
+    var files = this.files;
+    var url = URL.createObjectURL((files[0]));
+    loadAudio(url);
+  };
+
+  function loadAudio(source){
+    file.value='';
+    if(context==null)context = new AudioContext();
+    audio = document.getElementById("audio");
+    audio.crossOrigin = "anonymous";
+    audio.src = source;
+    audio.style.display='initial';
+    audio.onended=stoprecording;
+
+    audio.load();
+
+    if(!srca)srca = context.createMediaElementSource(audio);
+    gotAudio(srca);
+    if(window.closeStream)closeStream();
+  }
+
+  mic.onclick = function(){
+    if(context==null)context = new AudioContext();
+    navigator.getUserMedia = navigator.getUserMedia
+                      || navigator.webkitGetUserMedia
+                      || navigator.mozGetUserMedia;
+    navigator.getUserMedia({video:false,audio:true},(stream)=>{
+      srcm = context.createMediaStreamSource(stream);
+      gotAudio(srcm);
+      if(audio){
+        audio.style.display='';
+        audio.pause();
+        audio=null;
+      }
+      file.value='';
+      window.closeStream=function(){
+        stream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+      }
+    },console.log);
+  }
+
+
+    function gotAudio(src) {
+      analyser = context.createAnalyser();
+      src.connect(analyser);
+
+      if(src.mediaElement){
+        analyser.connect(context.destination);
+        audio.play();
+      }
+
+      analyser.fftSize = 256;
+      bufferLength=analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+
+      WIDTH = canvas.width;
+      HEIGHT = canvas.height;
+
+      window.addEventListener('resize',()=>{
+        WIDTH = canvas.width = window.innerWidth;
+        HEIGHT = canvas.height = window.innerHeight - 45;
+        barWidth = (WIDTH / bufferLength);
+      });
+
+      barWidth = (WIDTH / bufferLength);
+      barHeight=0;
+      var x = 0;
+
+      errored=false;
+      renderFrame();
+    };
+
+    function renderFrame() {
+      if(errored){
+        ctxanvas.fillStyle = "rgb(255,0,0)";
+        ctxanvas.textAlign = "center";
+        ctxanvas.font = (window.innerWidth/20)+"px Arial";
+        ctxanvas.fillText(errored, WIDTH/2, HEIGHT/2);
+        return
+      };
+      requestAnimationFrame(renderFrame);
+
+      x = 0;
+
+      analyser.getByteFrequencyData(dataArray);
+
+      ctxanvas.clearRect(0, 0, WIDTH, HEIGHT);
+
+      for (var i = 0; i < bufferLength; i++) {
+        rawHeight = dataArray[i];
+        barHeight = Math.max(5,dataArray[i]);
+
+        var r = barHeight + (25 * (i/bufferLength));
+        var g = 250 * (i/bufferLength);
+        var b = 50;
+
+        drawer[document.querySelector('#drawtype').value](r,g,b,i);
+
+        x += barWidth + 1;
+      }
+    }
+
+    var drawer={
+      bars: (r,g,b)=>{
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+      },
+      centered: (r,g,b)=>{
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.roundRect(x, (HEIGHT - barHeight)/2, barWidth, barHeight,30).fill();
+      },
+      circle: (r,g,b)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.lineWidth = 3;
+        ctxanvas.beginPath();
+        ctxanvas.arc(parseInt(WIDTH/2), parseInt(HEIGHT/2), barHeight*1.5, 0, 2 * Math.PI);
+        ctxanvas.stroke();
+      },
+      cursed: (r,g,b,i)=>{
+        ctxanvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.roundRect(WIDTH/2, (HEIGHT + barHeight+(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2 - barHeight, (HEIGHT + barHeight+(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2, (HEIGHT - barHeight-(i*2))/2, barHeight, 20,30).fill();
+        ctxanvas.roundRect(WIDTH/2 - barHeight, (HEIGHT - barHeight-(i*2))/2, barHeight, 20,30).fill();
+      },
+      spiral: (r,g,b,i)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.beginPath();
+        ctxanvas.lineWidth=5;
+        if(i==0){ctxanvas.translate(WIDTH/2,HEIGHT/2);}
+        ctxanvas.moveTo(0,0);
+        ctxanvas.lineTo(rawHeight,0);
+        ctxanvas.rotate(((Math.PI*5)/bufferLength));
+        ctxanvas.stroke();
+        ctxanvas.translate(parseInt(rawHeight*.001),0);
+        if(i==bufferLength-1){ctxanvas.resetTransform();}
+      },
+      boxed: (r,g,b,i)=>{
+        ctxanvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+        ctxanvas.lineWidth=2;
+        let dist = 15*i;
+        if(i==0){ctxanvas.translate(WIDTH/2,HEIGHT/2);}
+        ctxanvas.roundRect(-dist/2,-dist/2, dist, dist,20).stroke();
+        ctxanvas.rotate((Math.PI*.0003)*rawHeight);
+        if(i==bufferLength-1){ctxanvas.resetTransform();}
+      }
+    }
+
+    document.querySelector('#drawtype').innerHTML=Object.keys(drawer).map(e=>`<option value="${e}">${e}</option>`);
+
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      this.beginPath();
+      this.moveTo(x+r, y);
+      this.arcTo(x+w, y,   x+w, y+h, r);
+      this.arcTo(x+w, y+h, x,   y+h, r);
+      this.arcTo(x,   y+h, x,   y,   r);
+      this.arcTo(x,   y,   x+w, y,   r);
+      this.closePath();
+      return this;
+    }
+
+    function fullscreener(){
+      if(document.fullscreen){
+        document.exitFullscreen();
+      } else {
+        document.querySelector('#canvas').requestFullscreen();
+        WIDTH = canvas.width = window.innerWidth;
+        HEIGHT = canvas.height = window.innerHeight - 45;
+        barWidth = (WIDTH / bufferLength);
+      }
+    }
+
+    function record() {
+      window.time = 0;
+      var recordedChunks = [];
+      return new Promise(function (res, rej) {
+        var stream = canvas.captureStream(30 /*fps*/);
+        mediaRecorder = new MediaRecorder(stream, {
+            mimeType: "video/webm; codecs=vp9"
+        });
+
+        mediaRecorder.onstart = function (event) {
+          recorder.innerHTML='Stop';
+          recorder.onclick=()=>{mediaRecorder.stop()};
+          recordertime=setInterval(()=>{
+            time++;
+            recorder.innerHTML=`${parseInt(time/60)}:${time%60} stop`;
+          },1000);
+        }
+
+        mediaRecorder.onerror = function (er) {
+          recorder.innerHTML='error!';
+          recorder.onclick=record;
+          stoprecording();
+        }
+
+        mediaRecorder.ondataavailable = function (event) {
+            recordedChunks.push(event.data);
+        }
+
+        mediaRecorder.onstop = function (event) {
+            var blob = new Blob(recordedChunks, {type: "video/webm" });
+            var url = URL.createObjectURL(blob);
+            window.open(url);
+            recorder.innerHTML='Record';
+            recorder.onclick=record;
+            stoprecording();
+        }
+
+        mediaRecorder.start();
+      })
+
+    }
+
+    function stoprecording(){
+      clearInterval(recordertime);
+      time=0;
+    }
+
 </script>
 </html>

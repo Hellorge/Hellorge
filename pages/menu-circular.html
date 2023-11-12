@@ -44,6 +44,7 @@
     color: var(--bg-color);
   }
   menu-box {
+    --c: 10;
     display: inline-block;
     background-color: transparent;
     border-radius: 100%;
@@ -72,7 +73,7 @@
     top: calc(50% - var(--icon-size) / 2);
     left: calc(50% - var(--icon-size) / 2);
     transition: calc(var(--anim-time) * .7);
-    --az: calc(360deg / 8 * var(--i));
+    --az: calc(360deg / var(--c) * var(--i));
     --place: 0;
     transform: rotate(var(--az)) translate(var(--place)) rotate(calc(-1*var(--az)));
     height: var(--icon-size);
@@ -115,17 +116,19 @@
 <script type="text/javascript">
 
   class circularMenu {
-    constructor(menuArray) {
+    constructor(opts={}) {
+      Object.assign(this, opts);
+
       let plusIcon = '<svg id="switch-icon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>';
       let moreIcon = '';
       let root = document.createElement('circular-menu');
-      let extraOptions,showOptions;
+      let extraOptions, showOptions;
 
-      if(menuArray.length > 8) {
-        showOptions = menuArray.slice(0,7);
-        extraOptions = menuArray.slice(7);
+      if(this.menu_items.length > 8) {
+        showOptions = this.menu_items.slice(0,7);
+        extraOptions = this.menu_items.slice(7);
       } else {
-        showOptions = menuArray;
+        showOptions = this.menu_items;
       }
 
       root.innerHTML = `<input type="checkbox" id="switch-input" class="hidden">
@@ -189,7 +192,9 @@
         'icon': '<svg viewBox="0 0 512 512"><path d="M256 272v160a32 32 0 01-32 32h0a32 32 0 01-32-32M464 272c0-114.88-93.12-208-208-208S48 157.12 48 272h0a67.88 67.88 0 0196 0h0a78.28 78.28 0 01102.31-7.27L256 272l9.69-7.27A78.28 78.28 0 01368 272h0a67.88 67.88 0 0196 0zM256 64V48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>'
     }
   ]
-  var menu = new circularMenu(menuArray);
+  var menu = new circularMenu({
+    menu_items: menuArray
+  });
 
   document.body.appendChild(menu);
 </script>

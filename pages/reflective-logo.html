@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Reflective Logo</title>
+</head>
+<style>
+	body,html{
+	  width: 100%;
+	  height: 100%;
+	  margin: 0;
+	  padding: 0;
+	  overflow: hidden; 
+	}
+	body{
+	  background-color: #fefff4;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center; 
+	  background: linear-gradient(0deg, #111111 0%, #ddddcc 33%);
+	}
+	#svg_refl{
+	  height: 100%;
+/*	  filter: drop-shadow(2px 4px 4px black);*/
+	}
+</style>
+<body>
+	<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" id="svg_refl">
+		<use href="#everything"> 
+		</use>
+		<g filter="url(#reflection)">
+			<use href="#everything" transform="scale (1.1, -.33) translate(0 -512)" transform-origin="center" opacity="0.5"/>
+		</g>
+		<defs>
+			<g id="everything">
+<!-- 				<use href="#circle" y="-50" />
+				<use href="#arrow" y="-50" />
+				<use href="#point" y="-50" /> -->
+				<use href="#wave" x="256" y="196"/>
+				<use href="#morph1" x="256" y="196"/>
+				<use href="#morph2" x="256" y="196"/>
+				<use href="#morph3" x="256" y="196"/>
+				<animateTransform attributeName="transform" attributeType="XML" type="translate" 
+				dur="4s" repeatCount="indefinite" calcMode="spline"
+				keyTimes="0;0.5;1"
+				keySplines="0.7 0 0.3 1; 0.7 0 0.3 1"
+				values="0 -16; 0 16; 0 -16"/>
+			</g>
+
+			<ellipse id="wave" stroke-width="12" stroke="#c3abd1">
+				<animate attributeName="rx" dur="2s" repeatCount="indefinite" calcMode="spline" begin="100ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="96;48;132;182;182"/>
+				<animate attributeName="ry" dur="2s" repeatCount="indefinite" calcMode="spline" begin="100ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="96;64;92;182;182"/>
+				<animate attributeName="opacity" dur="2s" repeatCount="indefinite" calcMode="linear" begin="100ms"
+					keyTimes="0;0.74;0.75;0.9;1"
+					values="0;0;1;0;0"/>
+				<animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+			</ellipse>
+			<ellipse id="morph1" rx="96" ry="96" stroke-width="12" stroke="#c3abd1">
+				<animate attributeName="rx" dur="2s" repeatCount="indefinite" calcMode="spline" begin="100ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="96;48;132;90;96"/>
+				<animate attributeName="ry" dur="2s" repeatCount="indefinite" calcMode="spline" begin="100ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="96;64;92;90;96"/>
+				<animate attributeName="stroke" dur="2s" repeatCount="indefinite" begin="100ms"
+					keyTimes="0;0.65;0.75;1"
+					values="#c3abd1;#c3abd1;#908bbf;#c3abd1"/>
+				<animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+			</ellipse>
+			<ellipse id="morph2" rx="76" ry="76" stroke-width="12" stroke="#908bbf">
+				<animate attributeName="rx" dur="2s" repeatCount="indefinite" calcMode="spline" begin="50ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="76;32;102;70;76"/>
+				<animate attributeName="ry" dur="2s" repeatCount="indefinite" calcMode="spline" begin="50ms"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="76;44;72;70;76"/>
+				<animate attributeName="stroke" dur="2s" repeatCount="indefinite" begin="100ms"
+					keyTimes="0;0.65;0.75;1"
+					values="#908bbf;#908bbf;#332765;#908bbf"/>
+				<animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+			</ellipse>
+			<ellipse id="morph3" rx="56" ry="56" stroke-width="12" stroke="#332765" fill="#332765">
+				<animate attributeName="rx" dur="2s" repeatCount="indefinite" calcMode="spline"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="56;20;72;50;56"/>
+				<animate attributeName="ry" dur="2s" repeatCount="indefinite" calcMode="spline"
+					keyTimes="0;0.65;0.75;0.9;1"
+					keySplines="1 0 0.4 0.8; 0 0.7 1 1; 1 1 1 1; 1 1 1 1"
+					values="56;20;42;50;56"/>
+				<animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+			</ellipse>
+
+			<filter id="reflection">
+				<feTurbulence id="refl_turb" type="turbulence" numOctaves="2" result="turbulence"/>
+				<feDisplacementMap in2="turbulence" in="SourceGraphic" scale="32" xChannelSelector="G" yChannelSelector="R"/>
+				<animate id="anim_turb" dur="100s" href="#refl_turb" attributeName="baseFrequency" repeatCount="indefinite"
+					values="0.005 0.05; 0.003 0.005; 0.005 0.05"/>
+			</filter>
+		  <path
+		     stroke="#30ad6f"
+		     stroke-width="0.787803"
+		     id="circle"
+		     d="m 379.2956,254.39779 c 0,70.10286 -56.04082,126.93231 -125.17066,126.93231 -69.12985,0 -125.17066,-56.82945 -125.17066,-126.93231 0,-70.10286 56.04081,-126.93232 125.17066,-126.93232 42.92347,0 80.80073,21.90949 103.34997,55.302" />
+		  <path
+		     stroke="#30ad6f"
+		     stroke-width="0.787803"
+		     id="arrow"
+		     d="M 381.13327,159.81737 269.0987,269.02839 233.07212,234.81614 146.98197,320.82546" />
+		  <path
+		     stroke="#30ad6f"
+		     stroke-width="0.787803"
+		     id="point"
+		     d="m 377.83123,155.71938 8.39346,-1.03463 -1.06096,8.52015 z" />
+		</defs>
+		</svg>
+</body>
+</html>
