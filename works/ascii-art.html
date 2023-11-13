@@ -138,7 +138,7 @@
         }
     };
 
-    image1.src = '/assets/img/kanagawa.jpeg';
+    image1.src = '/{{ site.github.repository_name | append: "/assets/img/kanagawa.jpeg" | absolute_url }}';
     image1.load();
 </script>
 </body>
