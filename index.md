@@ -8,9 +8,11 @@ layout: default
   <a href="/{{ site.github.repository_name }}{{ file.path }}">
     {{ file.basename }}
     <br/>
-    {{ file.path | append: site.github.build_revision | relative_url }}
+    {{ site.github.repository_name | append: file.path}}
     <br/>
-    {{ file.path | append: site.github.build_revision }}
+    {{ site.github.repository_name | append: file.path | relative_url }}
+    <br/>
+    {{ site.github.repository_name | append: file.path | absolute_url }}
   </a>
   {% endif %}
 {% endfor %}
