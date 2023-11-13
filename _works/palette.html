@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Palette</title>
+</head>
+<style>
+    body {
+    	display: flex;
+    	width: 100vw;
+    	height: 100vh;
+    	margin: 0;
+    }
+    .color {
+    	height: 100%;
+    	width: 100%;
+    	color: #fff;
+    }
+</style>
+<body>
+</body>
+<script type="text/javascript">
+	["#111111","#161616","#1e1e1e","#b9b3a9","#ddddcc"].forEach(c => {
+		let clr = document.createElement("div");
+		clr.innerHTML = c;
+		clr.classList = "color";
+		clr.style.backgroundColor = c;
+		document.body.appendChild(clr);
+	});
+</script>
+</html>

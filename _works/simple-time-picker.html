@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" type="image/ico" href="/images/fav.ico">
+  <title>Time Picker</title>
+  <style media="screen">
+    body{
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        height: 90vh;
+        background-color: #181818;
+    }
+    lvl-0{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 12.5em;
+        width: 12.5em;
+        background-color: #00000055;
+        flex-grow: 1;
+        flex-basis: 7em;
+        flex-shrink: 1;
+        font-size: 2em;
+        perspective: 500px;
+        transform-style: preserve-3d;
+        perspective-origin: center center;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+         -ms-user-select: none;
+             user-select: none;
+        font-family: cursive;
+    }
+    lvl-1{
+        position: relative;
+        top: -0.24em;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        perspective: inherit;
+        transform-style: preserve-3d;
+        perspective-origin: center center;
+    }
+    .active lvl-1{
+        position: absolute;
+        height: 12.5em;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+    lvl-2{
+        width: 1.5em;
+        height: 100%;
+        display: flex;
+        transform-style: preserve-3d;
+        perspective-origin: center center;
+        transform-box: fill-box;
+        transform-origin: 50% 50% -6.25em;
+        transition: transform 1s ease-in-out, width .2s linear;
+        --lvl-hover: none;
+        --lvl-border: 1px solid transparent;
+        --lvl-origin: 50% 50% -6.25em;
+        --r360: 360deg;
+    }
+    lvl-2#t-mn{
+      --r360: -360deg;
+    }
+    lvl-2#t-ap{
+      --lvl-origin: 50% 50% -2.75em;
+    }
+    lvl-2:hover{
+        --lvl-hover: all;
+        --lvl-bordr: #fff;
+    }
+    .active lvl-2{
+        width: 3em;
+        transform: rotateX(var(--r360));
+    }
+    lvl-3{
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        transform-style: preserve-3d;
+        perspective-origin: center center;
+        transform-origin: var(--lvl-origin);
+        transform-box: fill-box;
+        flex-direction: column;
+        justify-content: center;
+        transition: .3s transform 0s;
+        transform-box: fill-box;
+    }
+
+    lvl-4{
+        position: absolute;
+        display: initial;
+        color: #9b9b9b;
+        text-align: center;
+        transform-box: fill-box;
+        transform-origin: inherit;
+        transform-style: preserve-3d;
+        opacity: 0;
+        transition: inherit;
+        transform: rotateX(var(--rot-X));
+        cursor: pointer;
+    }
+    .active lvl-4{
+        padding: .25em;
+        width: 1.5em;
+        margin: 0.5em;
+        opacity: 1;
+        background-color: #000;
+        pointer-events: var(--lvl-hover);
+        border: 2px solid var(--lvl-bordr, transparent);
+        border-radius: 10px;
+        transition: inherit;
+        -webkit-transition: inherit;
+        -moz-transition: inherit;
+        -ms-transition: inherit;
+        -o-transition: inherit;
+        box-shadow: 0 0 30px -13px #7474746e;
+    }
+
+    lvl-4.active{
+        color: #fff;
+        opacity: 1;
+    }
+
+    lvl-4#hr-01{ --rot-X: 30deg;}
+    lvl-4#hr-02{ --rot-X: 60deg;}
+    lvl-4#hr-03{ --rot-X: 90deg;}
+    lvl-4#hr-04{ --rot-X: 120deg;}
+    lvl-4#hr-05{ --rot-X: 150deg;}
+    lvl-4#hr-06{ --rot-X: 180deg;}
+    lvl-4#hr-07{ --rot-X: 210deg;}
+    lvl-4#hr-08{ --rot-X: 240deg;}
+    lvl-4#hr-09{ --rot-X: 270deg;}
+    lvl-4#hr-10{ --rot-X: 300deg;}
+    lvl-4#hr-11{ --rot-X: 330deg;}
+    lvl-4#hr-12{ --rot-X: 360deg;}
+
+    lvl-4#mn-00{ --rot-X: 0deg;}
+    lvl-4#mn-05{ --rot-X: 30deg;}
+    lvl-4#mn-10{ --rot-X: 60deg;}
+    lvl-4#mn-15{ --rot-X: 90deg;}
+    lvl-4#mn-20{ --rot-X: 120deg;}
+    lvl-4#mn-25{ --rot-X: 150deg;}
+    lvl-4#mn-30{ --rot-X: 180deg;}
+    lvl-4#mn-35{ --rot-X: 210deg;}
+    lvl-4#mn-40{ --rot-X: 240deg;}
+    lvl-4#mn-45{ --rot-X: 270deg;}
+    lvl-4#mn-50{ --rot-X: 300deg;}
+    lvl-4#mn-55{ --rot-X: 330deg;}
+    lvl-4#ap-AM{--rot-X: 0deg;pointer-events: none;}
+    lvl-4#ap-PM{--rot-X: 180deg;pointer-events: none;}
+
+    /* geo pad */
+    geo-pad{
+      height: 25em;
+      width: 25em;
+      margin-left: 2px;
+      background-color: #00000055;
+    }
+    geo-roller{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 90%;
+      width: 90%;
+      margin: 5%;
+      border-radius: 100%;
+      position: relative;
+      background-color: #00000030;
+      perspective: 200px;
+      transform-origin: center;
+      transform-style: preserve-3d;
+    }
+    .geo-axis{
+      color: #fff;
+      white-space: nowrap;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center left;
+    }
+    .geo-axis.x{
+      transform: rotateY(351deg) rotateZ(11deg) rotateY(348deg);
+    }
+    .geo-axis.y{
+      transform: rotateZ(270deg) rotateY(330deg);
+    }
+    .geo-axis.z{
+      transform: rotateZ(147deg) rotateY(350deg);
+    }
+    .wrmode{
+      writing-mode: tb;
+    }
+  </style>
+</head>
+<body>
+  <lvl-0 onclick="event.stopPropagation();this.classList.toggle('active');">
+      <lvl-1>
+        <lvl-2 onclick="event.stopPropagation();" id="t-hr">
+            <lvl-3>
+                <lvl-4 id="hr-01" val="-30"  class="hours">01</lvl-4>
+                <lvl-4 id="hr-02" val="-60"  class="hours">02</lvl-4>
+                <lvl-4 id="hr-03" val="-90"  class="hours">03</lvl-4>
+                <lvl-4 id="hr-04" val="-120" class="hours">04</lvl-4>
+                <lvl-4 id="hr-05" val="-150" class="hours">05</lvl-4>
+                <lvl-4 id="hr-06" val="-180" class="hours">06</lvl-4>
+                <lvl-4 id="hr-07" val="-210" class="hours">07</lvl-4>
+                <lvl-4 id="hr-08" val="-240" class="hours">08</lvl-4>
+                <lvl-4 id="hr-09" val="-270" class="hours">09</lvl-4>
+                <lvl-4 id="hr-10" val="-300" class="hours">10</lvl-4>
+                <lvl-4 id="hr-11" val="-330" class="hours">11</lvl-4>
+                <lvl-4 id="hr-12" val="0" class="hours active">12</lvl-4>
+            </lvl-3>
+        </lvl-2>
+        <lvl-2 onclick="event.stopPropagation();" id="t-mn">
+            <lvl-3>
+                <lvl-4 id="mn-00" val="0" class="mins active">00</lvl-4>
+                <lvl-4 id="mn-05" val="-30" class="mins">05</lvl-4>
+                <lvl-4 id="mn-10" val="-60" class="mins">10</lvl-4>
+                <lvl-4 id="mn-15" val="-90" class="mins">15</lvl-4>
+                <lvl-4 id="mn-20" val="-120" class="mins">20</lvl-4>
+                <lvl-4 id="mn-25" val="-150" class="mins">25</lvl-4>
+                <lvl-4 id="mn-30" val="-180" class="mins">30</lvl-4>
+                <lvl-4 id="mn-35" val="-210" class="mins">35</lvl-4>
+                <lvl-4 id="mn-40" val="-240" class="mins">40</lvl-4>
+                <lvl-4 id="mn-45" val="-270" class="mins">45</lvl-4>
+                <lvl-4 id="mn-50" val="-300" class="mins">50</lvl-4>
+                <lvl-4 id="mn-55" val="-330" class="mins">55</lvl-4>
+            </lvl-3>
+        </lvl-2>
+        <lvl-2 onclick="event.stopPropagation();this.querySelector('.active').click();" id="t-ap">
+            <lvl-3>
+                <lvl-4 id="ap-AM" class="merd active" val="180">AM</lvl-4>
+                <lvl-4 id="ap-PM" class="merd" val="0">PM</lvl-4>
+            </lvl-3>
+        </lvl-2>
+      </lvl-1>
+  </lvl-0>
+  <geo-pad>
+    <geo-roller>
+      <label class="geo-axis x" for="axix-x"><input onchange="lvlZeroOrbit();" type="range" name="axix-x" value="0" min="0" max="360" id="axix-x"><span class="">X</span></label>
+      <label class="geo-axis y" for="axix-y"><input onchange="lvlZeroOrbit();" type="range" name="axix-y" value="0" min="0" max="360" id="axix-y"><span class="wrmode">Y</span></label>
+      <label class="geo-axis z" for="axix-z"><input onchange="lvlZeroOrbit();" type="range" name="axix-z" value="0" min="0" max="360" id="axix-z"><span class="">Z</span></label>
+    </geo-roller>
+  </geo-pad>
+</body>
+<script>
+
+      document.querySelectorAll('lvl-4').forEach((e)=>{
+          e.addEventListener('click', (e)=>{
+              if(document.querySelector('lvl-0').classList.contains('active')){
+                  e.stopPropagation();
+                  document.querySelector('#t-'+e.target.id.split('-')[0]+'>lvl-3').style.transform= `rotateX(${parseInt(e.target.getAttribute('val'))}deg)`;
+                  if(e.target.id.split('-')[0] == 'ap'){
+                      document.querySelectorAll('.merd').forEach((e)=>{e.classList.toggle('active')});
+                  }
+                  else{
+                      document.querySelector('#t-'+e.target.id.split('-')[0]+'>lvl-3>lvl-4.active').classList.remove('active');
+                      e.target.classList.add('active');
+                  }
+              }
+              else{document.querySelector('lvl-0').classList.add('active');}
+          })
+      });
+
+      function lvlZeroOrbit(){
+        let valX = document.querySelector('input#axix-x').value;
+        let valY = document.querySelector('input#axix-y').value;
+        let valZ = document.querySelector('input#axix-z').value;
+        document.querySelector('lvl-1').style.transform=`translate(-50%, -50%) rotateX(${valX}deg) rotateY(${valY}deg) rotateZ(${valZ}deg)`;
+      }
+</script>
+</html>
