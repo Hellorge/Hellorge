@@ -12,7 +12,7 @@ layout: default
     <br/>
     {{ site.github.repository_name | append: file.path | relative_url }}
     <br/>
-    {{ site.github.repository_name | append: file.path | absolute_url }}
+    {{ file.path | absolute_url }}
   </a>
   {% endif %}
 {% endfor %}
