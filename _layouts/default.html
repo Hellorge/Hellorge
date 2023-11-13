@@ -20,7 +20,7 @@
 
         {% if site.logo %}
           {% if site.logo contains "svg" %}
-            {{ include_relative "/assets/svg/logo01.svg" }}
+            {{ include_relative /assets/svg/logo01.svg }}
           {% else %}
             <img src="{{site.logo | relative_url}}" alt="Logo" />
           {% endif %}
