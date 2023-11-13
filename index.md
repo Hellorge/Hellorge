@@ -1,5 +1,5 @@
 ---
-layout: minimal
+layout: default
 ---
 
 {% for file in site.static_files %}
