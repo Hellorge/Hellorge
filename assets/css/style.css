@@ -378,13 +378,15 @@ a:hover small {
     padding-right: 40px;
     height: 100%;
     box-sizing: border-box;
+    flex-grow: .2;
 }
 
 .main-content {
-        height: 100%;
-        overflow: auto;
-        box-sizing: border-box;
-        padding: 50px 50px 0 0;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 50px 50px 0 0;
+    flex-grow: .8;
 }
 
 blockquote {
