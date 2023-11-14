@@ -427,6 +427,7 @@ kbd {
 header {
     width: 270px;
     float: left;
+    position: fixed;
     -webkit-font-smoothing: subpixel-antialiased
 }
 
@@ -511,6 +512,7 @@ footer {
     width: 270px;
     float: left;
     bottom: 50px;
+    position: fixed;
     -webkit-font-smoothing: subpixel-antialiased
 }
 
