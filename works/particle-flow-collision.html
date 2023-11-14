@@ -181,9 +181,10 @@
                 clr: "#fff"
             }, 500, this));
         }
+
         render() {
             this.ctx.globalAlpha = .2;
-            this.ctx.fillStyle = '#111111';
+            this.ctx.fillStyle = '#000000';
             this.ctx.fillRect(0, 0, canvas.width, canvas.height);
             this.ctx.globalAlpha = 1;
 
@@ -203,7 +204,7 @@
         "canvas": canvas,
         "bounce": 1,
         "finite": true,
-        "particle_count": 1000,
+        "particle_count": 500,
         "particle_opts": {
             x: null,
             y: null,
