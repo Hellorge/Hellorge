@@ -362,12 +362,20 @@ a:hover small {
 }
 
 .wrapper {
-    width: 1000px;
-    margin: 0 auto
+    display: flex;
 }
 
 .main-sidebar {
-     width: 200px;   
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: max-content;
+    height: 100%;
+    padding-right: 40px;
+}
+
+.main-content {
+        
 }
 
 blockquote {
