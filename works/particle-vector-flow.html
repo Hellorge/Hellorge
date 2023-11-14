@@ -18,14 +18,16 @@
     class Particle {
         x = 0
         y = 0
-        rad = 5
-        clr = "red"
+        r = 5
+        vx = 0
+        vy = 0
+        clr = "#fff"
         constructor(opts={}, id, stage) {
             Object.assign(this, opts);
 
             this.id = id;
             this.stage = stage;
-            this.sphereArea = 4 * Math.PI * this.rad ** 2;
+            this.sphereArea = 4 * Math.PI * this.r ** 2;
 
             this.limX = this.stage.canvas.width;
             this.limY = this.stage.canvas.height;
@@ -34,24 +36,21 @@
             this.y = this.y || this.rnd_y;
         }
         next() {
-            let velo = this.stage.get_velocities(this);
-
-            this.vx = velo.x;
-            this.vy = velo.y;
+            this.stage.seeder(this);
 
             this.x += this.vx;
             this.y += this.vy;
 
-            if (this.x - this.rad > this.limX && this.vx >= 0) {
-                this.x = 0 - this.rad;
-            } else if (this.x + this.rad < 0 && this.vx < 0) {
-                this.x = this.limX + this.rad;
+            if (this.x - this.r > this.limX && this.vx >= 0) {
+                this.x = 0 - this.r;
+            } else if (this.x + this.r < 0 && this.vx < 0) {
+                this.x = this.limX + this.r;
             }
 
-            if (this.y - this.rad > this.limY && this.vy >= 0) {
-                this.y = 0 - this.rad;
-            } else if (this.y + this.rad < 0 && this.vy < 0) {
-                this.y = this.limY + this.rad;
+            if (this.y - this.r > this.limY && this.vy >= 0) {
+                this.y = 0 - this.r;
+            } else if (this.y + this.r < 0 && this.vy < 0) {
+                this.y = this.limY + this.r;
             }
 
             return this
@@ -59,7 +58,7 @@
         draw() {
             this.stage.ctx.fillStyle = this.clr || "#ffffff";
             this.stage.ctx.beginPath();
-            this.stage.ctx.arc(this.x, this.y, this.rad, 0, 180);
+            this.stage.ctx.arc(this.x, this.y, this.r, 0, 180);
             this.stage.ctx.fill();
         }
         get rnd_x() {
@@ -100,33 +99,32 @@
             this.seeds.forEach(s => {
                 this.ctx.strokeStyle = '#ff0000';
                 this.ctx.beginPath();
-                this.ctx.moveTo(s[0],s[1]);
-                this.ctx.lineTo(s[2],s[3]);
+                this.ctx.moveTo(s.x,s.y);
+                this.ctx.lineTo(s.dx,s.dy);
                 this.ctx.stroke();
                 this.ctx.beginPath();
-                this.ctx.arc((s[0]+s[2])/2, (s[1]+s[3])/2, Math.hypot(s[2] - s[0], s[3] - s[1])/2, 0, Math.PI*2);
                 this.ctx.fillStyle = '#ff0000';
-                this.ctx.fillRect(s[2] - 2, s[3] - 2, 4, 4);
+                this.ctx.fillRect(s.dx - 3, s.dy - 3, 6, 6);
                 this.ctx.stroke();
             });
 
             requestAnimationFrame(this.render.bind(this));
         }
 
-        get_velocities(p) {
-
-            let dx = 0, dy = 0;
+        seeder(p) {
+            p.vx -= p.r * 1 * p.vx;
+            p.vy -= p.r * 1 * p.vy;
 
             this.seeds.forEach(s => {
-                let c = [(s[0]+s[2])/2, (s[1]+s[3])/2];
-                let inf = [s[2] - s[0], s[3] - s[1]];
-                let dist = Math.hypot(p.x - c[0], p.y - c[1]);
+                let cx = (s.x+s.dx)/2;
+                let cy = (s.y+s.dy)/2;
+                let infx = s.dx - s.x;
+                let infy = s.dy - s.y;
+                let dist = Math.hypot(p.x - cx, p.y - cy);
 
-                dx += inf[0] / dist;
-                dy += inf[1] / dist;
+                p.vx += infx / dist / p.r;
+                p.vy += infy / dist / p.r;
             });
-
-            return { x: dx, y: dy }
         }
     }
 
@@ -138,19 +136,19 @@
         "canvas": canvas,
         "particle_count": 500,
         "seeds": [
-            [20,50,50,110],
-            [500,300,600,555],
-            [1000,120,1200,10],
+            {x: 20, y: 50, dx: 50, dy: 110},
+            {x: 500, y: 300, dx: 600, dy: 555},
+            {x: 1000, y: 120, dx: 1200, dy: 10}
         ],
         "particle_opts": {
             x: null,
             y: null,
-            get rad() {
-                return .5;
+            get r() {
+                return 1//(Math.random()*3)+1;
             },
             get clr() {
                 const colors = ["#e10869", "#30ad6f", "#f4782c", "#f7ed9c", "#0e94b2"];
-                return "#fff"
+                return "#fff" //colors[Math.floor(Math.random()*colors.length)]
             }
         }
     });
