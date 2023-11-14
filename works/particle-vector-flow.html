@@ -73,10 +73,12 @@
     class Stage {
         particle_count = 100
         particles = []
+
         constructor(opts={}) {
             Object.assign(this, opts);
             this.init();
         }
+
         init() {
             this.particles = [];
             this.ctx = this.canvas.getContext('2d');
@@ -84,6 +86,7 @@
             for (let i = 0; i < this.particle_count; i++)
                 this.particles.push(new Particle(this.particle_opts, i, this));
         }
+
         render() {
             this.ctx.globalAlpha = .2;
             this.ctx.fillStyle = '#000000';
@@ -94,16 +97,36 @@
                 p.next().draw();
             });
 
-            requestAnimationFrame(this.render.bind(this));
-        }
-        get_velocities(p) {
-            this.velocities.forEach(b => {
-                if (p.x > b.x && p.y > b.y && p.x < b.dx && p.y < b.dy) {
-                    return {x: p.vx, y: p.vy}
-                }
+            this.seeds.forEach(s => {
+                this.ctx.strokeStyle = '#ff0000';
+                this.ctx.beginPath();
+                this.ctx.moveTo(s[0],s[1]);
+                this.ctx.lineTo(s[2],s[3]);
+                this.ctx.stroke();
+                this.ctx.beginPath();
+                this.ctx.arc((s[0]+s[2])/2, (s[1]+s[3])/2, Math.hypot(s[2] - s[0], s[3] - s[1])/2, 0, Math.PI*2);
+                this.ctx.fillStyle = '#ff0000';
+                this.ctx.fillRect(s[2] - 2, s[3] - 2, 4, 4);
+                this.ctx.stroke();
             });
 
-            return { x: 0, y: 0 }
+            requestAnimationFrame(this.render.bind(this));
+        }
+
+        get_velocities(p) {
+
+            let dx = 0, dy = 0;
+
+            this.seeds.forEach(s => {
+                let c = [(s[0]+s[2])/2, (s[1]+s[3])/2];
+                let inf = [s[2] - s[0], s[3] - s[1]];
+                let dist = Math.hypot(p.x - c[0], p.y - c[1]);
+
+                dx += inf[0] / dist;
+                dy += inf[1] / dist;
+            });
+
+            return { x: dx, y: dy }
         }
     }
 
@@ -114,8 +137,10 @@
     const stage = new Stage({
         "canvas": canvas,
         "particle_count": 500,
-        "velocities": [
-            {x: 0, y: 0, dx: 40, dy: 30, vx: 1, vy: 0},
+        "seeds": [
+            [20,50,50,110],
+            [500,300,600,555],
+            [1000,120,1200,10],
         ],
         "particle_opts": {
             x: null,
