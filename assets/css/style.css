@@ -448,7 +448,6 @@ kbd {
 header {
     width: 270px;
     float: left;
-    /* position: fixed; */
     -webkit-font-smoothing: subpixel-antialiased
 }
 
@@ -535,10 +534,6 @@ footer {
     div.wrapper {
         width: auto;
         margin: 0
-    }
-
-    header {
-        padding-right: 320px
     }
 
     header a small {
