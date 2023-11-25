@@ -144,7 +144,6 @@ function HSLToHex({h,s,l}) {
   return "#" + r + g + b;
 }
 
-
 function shiftColor(hexColor) {
     // Remove the hash sign if present
     hexColor = hexColor.replace(/^#/, '');
@@ -167,20 +166,16 @@ function shiftColor(hexColor) {
         shiftAmount = 20; // Shift towards warmer tones
     }
 
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
     // Shift each component by the determined amount
     const shiftedR = clamp(r + shiftAmount, 0, 255);
     const shiftedG = clamp(g + shiftAmount, 0, 255);
     const shiftedB = clamp(b + shiftAmount, 0, 255);
 
-    const toHex = (num) => num.toString(16).padStart(2, '0');
     const shiftedHexColor = `#${toHex(shiftedR)}${toHex(shiftedG)}${toHex(shiftedB)}`;
 
     return shiftedHexColor;
-}
-
-// Function to clamp a value within a specified range
-function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
 }
 
 function shiftToGhibliPalette(hexColor) {
