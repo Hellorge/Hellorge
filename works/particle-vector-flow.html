@@ -41,6 +41,9 @@
             this.x += this.vx;
             this.y += this.vy;
 
+            this.vx *= (1 * this.r / 100);
+            this.vy *= (1 * this.r / 100);
+
             this.outbound();
 
             return this
@@ -117,22 +120,23 @@
         }
 
         seeder(p) {
-            p.vx -= p.r * 1 * p.vx;
-            p.vy -= p.r * 1 * p.vy;
-
             this.seeds.forEach(s => {
-                let cx = (s.x+s.dx)/2;
-                let cy = (s.y+s.dy)/2;
-                let dist = Math.hypot(p.x - cx, p.y - cy);
-
                 let infx = s.dx - s.x;
                 let infy = s.dy - s.y;
 
-                p.vx += infx / (dist * p.r * 10);
-                p.vy += infy / (dist * p.r * 10);
+                let cx = (s.x+s.dx)/2;
+                let cy = (s.y+s.dy)/2;
 
-                p.vx *= 2;
-                p.vy *= 2;
+                let t = ((p.x - cx) * infx + (p.y - cy) * infy) / (infx^2 + infy^2);
+                t = Math.max(0, Math.min(1, t));
+
+                let nx = s.x + t * infx;
+                let ny = s.y + t * infy;
+
+                let dist = Math.max(Math.hypot(p.x - nx, p.y - ny), Math.hypot(infx, infy));
+
+                p.vx += infx / (dist * (.5*p.r));
+                p.vy += infy / (dist * (.5*p.r));
             });
         }
     }
@@ -143,17 +147,17 @@
 
     const stage = new Stage({
         "canvas": canvas,
-        "particle_count": 500,
+        "particle_count": 1000,
         "seeds": [
-            {x: 500, y: 300, dx: 600, dy: 555},
-            {x: 1000, y: 120, dx: 1200, dy: 10},
-            {x: 20, y: 250, dx: 100, dy: 110},
+            {x: 500, y: 200, dx: 600, dy: 455},
+            {x: 1000, y: 220, dx: 1100, dy: 120},
+            {x: 20, y: 250, dx: 100, dy: 50},
         ],
         "particle_opts": {
             x: null,
             y: null,
             get r() {
-                return 1 // (Math.random()*1)+1;
+                return 1//Math.ceil(Math.random()*5)+1;
             },
             get clr() {
                 const colors = ["#e10869", "#30ad6f", "#f4782c", "#f7ed9c", "#0e94b2"];

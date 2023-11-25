@@ -20,10 +20,6 @@
         this.y = y;
       }
 
-      add(vector) {
-        return new Vector(this.x + vector.x, this.y + vector.y);
-      }
-
       subtract(vector) {
         return new Vector(this.x - vector.x, this.y - vector.y);
       }
@@ -39,10 +35,6 @@
       get magnitude() {
         return Math.sqrt(this.x ** 2 + this.y ** 2);
       }
-
-      get direction() {
-        return Math.atan2(this.x, this.y);
-      }
     }
 
     const collisionVector = (particle1, particle2) => {
@@ -50,7 +42,6 @@
         let dvel = particle1.velocity.subtract(particle2.velocity);
       return particle1.velocity
         .subtract(dpos.multiply(dvel.dotProduct(dpos) / dpos.magnitude**2)
-          // add mass to the system
           .multiply((2 * particle2.sphereArea) / (particle1.sphereArea + particle2.sphereArea))
         );
     };
