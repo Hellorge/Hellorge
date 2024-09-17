@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guitaa - Learn to play any song</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="logo">GUITAA</div>
+    <nav>
+      <ul>
+        <li><a href="#">Discover</a></li>
+        <li><a href="#">New Music</a></li>
+        <li><a href="#">Top Music</a></li>
+      </ul>
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <button>
+          <i class="search-icon"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="content-wrapper">
+      <section class="chord-visualization">
+        <div class="chord-image">
+          <img src="chord-diagram.png" alt="Chord Diagram">
+          <div class="finger-indicators">
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+          </div>
+        </div>
+        <div class="instrument-selector">
+          <button class="active">Guitar</button>
+          <button>Piano</button>
+          <button>Ukulele</button>
+        </div>
+      </section>
+
+      <section class="video-player">
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/video-id" frameborder="0"></iframe>
+        </div>
+        <div class="player-controls">
+          <button class="play-pause"><i class="play-icon"></i></button>
+          <input type="range" class="volume-slider">
+          <div class="time-progress">
+            <span class="current-time">0:00</span>
+            <input type="range" class="seek-slider">
+            <span class="total-time">3:36</span>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <nav class="side-menu">
+    <ul>
+      <li><a href="#">Playlists</a></li>
+      <li><a href="#">Artists</a></li>
+      <li><a href="#">Channels</a></li>
+      <li><a href="#">Hall of Fame</a></li>
+      <li><a href="#">Earn Points</a></li>
+    </ul>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
+<style>/* Reset some default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic layout and styling */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f2f2f2;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+nav ul {
+  display: flex;
+  list-style-type: none;
+}
+
+nav ul li {
+  margin-right: 24px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+}
+
+.search-box button {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 32px;
+}
+
+.chord-visualization,
+.video-player {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  flex-basis: 48%;
+}
+
+.chord-image {
+  position: relative;
+}
+
+.chord-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.finger-indicators {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.finger-indicators .indicator {
+  width: 16px;
+  height: 16px;
+  background-color: #ff6b6b;
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+
+.instrument-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.instrument-selector button {
+  background-color: #f2f2f2;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.instrument-selector button.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.player-controls .play-pause {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.player-controls .volume-slider {
+  flex-grow: 1;
+  margin: 0 16px;
+}
+
+.player-controls .time-progress {
+  display: flex;
+  align-items: center;
+}
+
+.player-controls .current-time,
+.player-controls .total-time {
+  margin: 0 8px;
+}
+
+.player-controls .seek-slider {
+  flex-grow: 1;
+}
+
+.side-menu {
+  background-color: #f2f2f2;
+  padding: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 200px;
+  overflow-y: auto;
+}
+
+.side-menu ul {
+  list-style-type: none;
+}
+
+.side-menu ul li {
+  margin-bottom: 16px;
+}
+
+.side-menu ul li a {
+  color: #333;
+  text-decoration: none;
+}</style>

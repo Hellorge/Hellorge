@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mehndi Masterpiece - Exquisite Henna Art</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #C17C40;
+            --secondary-color: #E6A857;
+            --accent-color: #8C5638;
+            --background-color: #FDF5E6;
+            --text-color: #4A4A4A;
+            --heading-font: 'Cormorant Garamond', serif;
+            --body-font: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--body-font);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: var(--heading-font);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--background-color);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--accent-color);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mandala Background Styles */
+        .mandala-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .mandala-background svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes rotateMandala {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .mandala-background {
+            animation: rotateMandala 240s linear infinite;
+        }
+
+        /* Services Section Styles */
+        .services {
+            padding: 5rem 10%;
+            background-color: #FFF;
+        }
+
+        .services h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .service-item {
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .service-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-item img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-item h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-item p {
+            font-size: 0.9rem;
+        }
+
+        /* Gallery Section Styles */
+        .gallery {
+            padding: 5rem 10%;
+            background-color: var(--background-color);
+        }
+
+        .gallery h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Testimonials Section Styles */
+        .testimonials {
+            padding: 5rem 10%;
+            background-color: #FFF;
+        }
+
+        .testimonials h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .testimonial-item {
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-item p {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Contact Section Styles */
+        .contact {
+            padding: 5rem 10%;
+            background-color: var(--background-color);
+        }
+
+        .contact h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            font-family: var(--body-font);
+        }
+
+        .form-group textarea {
+            height: 150px;
+        }
+
+		.carousel {
+            background-color: var(--background-color);
+            padding: 5rem 10%;
+            text-align: center;
+        }
+
+        .carousel h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .carousel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .carousel-slide {
+            display: none;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            border-radius: 15px;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(193, 124, 64, 0.7);
+            color: var(--background-color);
+            padding: 1rem;
+            text-decoration: none;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(193, 124, 64, 1);
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+        }
+
+        .view-all {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .view-all:hover {
+            background-color: var(--secondary-color);
+            color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Map Location Styles */
+        .map-section {
+            padding: 5rem 10%;
+            background-color: #FFF;
+            text-align: center;
+        }
+
+        .map-section h2 {
+            font-family: var(--heading-font);
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .map-container {
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .location-info {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .location-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .location-info strong {
+            color: var(--primary-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .carousel-container {
+                max-width: 100%;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            padding: 3rem 10%;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section h3 {
+            color: var(----accent-color);
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .social-links a {
+            color: var(--background-color);
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .service-grid,
+            .gallery-grid,
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Mehndi Masterpiece</div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#location">Location</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+		<section class="hero" id="home">
+            <div class="mandala-background">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                    <g fill="none" stroke="#C17C40" stroke-width="0.5">
+                        <!-- Outer circle -->
+                        <circle cx="250" cy="250" r="240" />
+                        
+                        <!-- Mandala elements -->
+                        <g id="mandala-element">
+                            <path d="M250 10 Q300 125 250 240 Q200 125 250 10" />
+                            <path d="M250 10 Q270 125 250 240 Q230 125 250 10" />
+                            <circle cx="250" cy="125" r="10" />
+                            <path d="M220 70 Q250 100 280 70" />
+                            <path d="M220 180 Q250 150 280 180" />
+                        </g>
+                        
+                        <!-- Repeat the mandala element 8 times -->
+                        <use href="#mandala-element" transform="rotate(45 250 250)" />
+                        <use href="#mandala-element" transform="rotate(90 250 250)" />
+                        <use href="#mandala-element" transform="rotate(135 250 250)" />
+                        <use href="#mandala-element" transform="rotate(180 250 250)" />
+                        <use href="#mandala-element" transform="rotate(225 250 250)" />
+                        <use href="#mandala-element" transform="rotate(270 250 250)" />
+                        <use href="#mandala-element" transform="rotate(315 250 250)" />
+                        
+                        <!-- Central elements -->
+                        <circle cx="250" cy="250" r="50" />
+                        <circle cx="250" cy="250" r="40" />
+                        <circle cx="250" cy="250" r="30" />
+                        <circle cx="250" cy="250" r="20" />
+                        <circle cx="250" cy="250" r="10" />
+                    </g>
+                </svg>
+            </div>
+            <div class="hero-content">
+                <h1>Exquisite Henna Artistry</h1>
+                <p>Transform your special moments with intricate, personalized henna designs</p>
+                <a href="#contact" class="btn">Book Your Session</a>
+            </div>
+        </section>
+        <section class="services" id="services">
+            <h2>Our Enchanting Services</h2>
+            <div class="service-grid">
+                <div class="service-item">
+                    <img src="/api/placeholder/400/300" alt="Bridal Henna">
+                    <h3>Bridal Henna</h3>
+                    <p>Exquisite designs to make your wedding day unforgettable</p>
+                </div>
+                <div class="service-item">
+                    <img src="/api/placeholder/400/300" alt="Festival Henna">
+                    <h3>Festival Henna</h3>
+                    <p>Vibrant patterns to celebrate cultural events in style</p>
+                </div>
+                <div class="service-item">
+                    <img src="/api/placeholder/400/300" alt="Modern Fusion">
+                    <h3>Modern Fusion</h3>
+                    <p>Contemporary designs blending tradition with trending styles</p>
+                </div>
+            </div>
+        </section>
+        <section class="carousel" id="gallery">
+            <h2>Our Previous Work</h2>
+            <div class="carousel-container">
+                <div class="carousel-slide active">
+                    <img src="/api/placeholder/800/600" alt="Henna Design 1">
+                </div>
+                <div class="carousel-slide">
+                    <img src="/api/placeholder/800/600" alt="Henna Design 2">
+                </div>
+                <div class="carousel-slide">
+                    <img src="/api/placeholder/800/600" alt="Henna Design 3">
+                </div>
+                <a href="#" class="carousel-btn prev">&lt;</a>
+                <a href="#" class="carousel-btn next">&gt;</a>
+            </div>
+            <a href="#" class="view-all">View All Previous Works</a>
+        </section>
+        <section class="map-section" id="location">
+            <h2>Visit Our Studio</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1475575970716!2d-73.98717542466282!3d40.75757344187559!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259aac3829875%3A0x36d162e51b38c14!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1694986621501!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>123 Henna Lane, Artsville, NY 10001</p>
+                <p>Phone: (555) 123-4567</p>
+                <p>Email: info@mehndimasterpiece.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="Pinterest">📌</a>
+                </div>
+            </div>
+            <div class="footer-section">
+				<h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#location">Location</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Mehndi Masterpiece. Transforming moments into lasting memories.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Carousel functionality
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.querySelector('.carousel-btn.prev');
+        const nextBtn = document.querySelector('.carousel-btn.next');
+        let currentSlide = 0;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+
+        // Enquiry form popup
+        const enquireButtons = document.querySelectorAll('.btn');
+        enquireButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Enquiry form will open here. Implement the form functionality as needed.');
+            });
+        });
+    </script>
+</body>
+</html>
