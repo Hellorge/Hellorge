@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TE-Style CPU Graph</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .cpu-monitor {
+            background-color: #222;
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+/*            width: 300px;*/
+        }
+
+        .cpu-title {
+            color: #ff6600;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cpu-graph {
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .cpu-bar {
+            flex-grow: 1;
+            background-color: #ff6600;
+            transition: height 0.2s ease;
+        }
+
+        .cpu-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .cpu-load, .cpu-temp {
+            font-size: 18px;
+        }
+
+        .cpu-load::after {
+            content: '%';
+        }
+
+        .cpu-temp::after {
+            content: '°C';
+        }
+
+        .dot-matrix {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .dot.active {
+            background-color: #ff6600;
+            box-shadow: 0 0 5px #ff6600;
+        }
+
+        .dot-matrix-rect {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+
+        .rect {
+            width: 15px;
+            height: 15px;
+            border-radius: 2px;
+            background-color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .rect.active {
+            background-color: #ff6600;
+            box-shadow: 0 0 5px #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <div class="cpu-monitor">
+        <div class="cpu-title">CPU MONITOR</div>
+        <div class="cpu-graph">
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+            <div class="cpu-bar"></div>
+        </div>
+        <div class="cpu-stats">
+            <div class="cpu-load">0</div>
+            <div class="cpu-temp">0</div>
+        </div>
+    </div>
+
+    <div class="cpu-monitor">
+        <div class="cpu-title">CPU MONITOR</div>
+        <div class="dot-matrix">
+            <!-- Dots will be inserted here by JavaScript -->
+        </div>
+        <div class="cpu-stats">
+            <div class="cpu-load dot">0</div>
+            <div class="cpu-temp dot">0</div>
+        </div>
+    </div>
+
+    <div class="cpu-monitor">
+        <div class="cpu-title">CPU MONITOR</div>
+        <div class="dot-matrix-rect">
+            <!-- Dots will be inserted here by JavaScript -->
+        </div>
+        <div class="cpu-stats">
+            <div class="cpu-load rect">0</div>
+            <div class="cpu-temp rect">0</div>
+        </div>
+    </div>
+
+    <script>
+        const bars = document.querySelectorAll('.cpu-bar');
+        const loadDisplay = document.querySelector('.cpu-load');
+        const tempDisplay = document.querySelector('.cpu-temp');
+
+        function updateCPUGraph() {
+            const load = Math.floor(Math.random() * 100);
+            const temp = Math.floor(Math.random() * 30) + 40;
+
+            bars.forEach((bar, index) => {
+                const height = Math.random() * 100;
+                bar.style.height = `${height}%`;
+            });
+
+            loadDisplay.textContent = load;
+            tempDisplay.textContent = temp;
+        }
+
+        setInterval(updateCPUGraph, 1000);
+        updateCPUGraph();
+
+
+        const matrix = document.querySelector('.dot-matrix');
+        const loadDisplayDot = document.querySelector('.cpu-load.dot');
+        const tempDisplayDot = document.querySelector('.cpu-temp.dot');
+
+        // Create 200 dots (20x10 grid)
+        for (let i = 0; i < 200; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            matrix.appendChild(dot);
+        }
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateDotGraph() {
+            const load = Math.floor(Math.random() * 100);
+            const temp = Math.floor(Math.random() * 30) + 40;
+
+            // Update dot matrix
+            dots.forEach((dot, index) => {
+                if (index < load * 2) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            loadDisplayDot.textContent = load;
+            tempDisplayDot.textContent = temp;
+        }
+
+        setInterval(updateDotGraph, 1000);
+        updateDotGraph();
+
+        const matrixRect = document.querySelector('.dot-matrix-rect');
+        const loadDisplayRect = document.querySelector('.cpu-load.rect');
+        const tempDisplayRect = document.querySelector('.cpu-temp.rect');
+
+        const COLS = 20;
+        const ROWS = 7;
+
+        // Create 140 dots (20x7 grid)
+        for (let i = 0; i < COLS * ROWS; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'rect';
+            matrixRect.appendChild(dot);
+        }
+
+        const rects = document.querySelectorAll('.rect');
+
+        let cpuHistory = new Array(COLS).fill(0);
+
+        function updateRectGraph() {
+            const load = Math.floor(Math.random() * 100);
+            const temp = Math.floor(Math.random() * 30) + 40;
+
+            // Shift history and add new value
+            cpuHistory.shift();
+            cpuHistory.push(load);
+
+            // Update dot matrix
+            for (let col = 0; col < COLS; col++) {
+                const colLoad = cpuHistory[col];
+                for (let row = 0; row < ROWS; row++) {
+                    const dotIndex = row * COLS + col;
+                    if (row < Math.ceil(colLoad / (100 / ROWS))) {
+                        rects[dotIndex].classList.add('active');
+                    } else {
+                        rects[dotIndex].classList.remove('active');
+                    }
+                }
+            }
+
+            loadDisplayRect.textContent = load;
+            tempDisplayRect.textContent = temp;
+        }
+
+        setInterval(updateRectGraph, 200);
+        updateRectGraph();
+    </script>
+</body>
+</html>
